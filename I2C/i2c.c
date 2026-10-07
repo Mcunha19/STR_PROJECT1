@@ -23,16 +23,15 @@
 
 //}
 
-void OpenI2C( void  )
-{
-  SSP1STAT = 0x80;
-  SSP1CON1 = 0x08;
-  SSP1CON2 = 0x00;
-  SSP1ADD = 0x03;
-  SSP1CON1bits.SSPEN = 1;
+void OpenI2C(void) {
+    SSP1STAT = 0x80;
+    SSP1CON1 = 0x08;
+    SSP1CON2 = 0x00;
+    SSP1ADD = 0x03;
+    SSP1CON1bits.SSPEN = 1;
 
-  I2C_SCL = 1;
-  I2C_SDA = 1;
+    I2C_SCL = 1;
+    I2C_SDA = 1;
 }
 
 /********************************************************************
@@ -41,12 +40,11 @@ void OpenI2C( void  )
 *     Parameters:       void                                        *
 *     Description:      Read single byte from I2C bus.              *
 ********************************************************************/
-unsigned char ReadI2C( void )
-{
-if( ((SSP1CON1&0x0F)==0x08) || ((SSP1CON1&0x0F)==0x0B) )	//master mode only
-  SSP1CON2bits.RCEN = 1;           // enable master for 1 byte reception
-  while ( !SSP1STATbits.BF );      // wait until byte received  
-  return ( SSP1BUF );              // return with read byte 
+unsigned char ReadI2C(void) {
+    if( ((SSP1CON1&0x0F)==0x08) || ((SSP1CON1&0x0F)==0x0B) )	//master mode only
+        SSP1CON2bits.RCEN = 1;           // enable master for 1 byte reception
+    while (!SSP1STATbits.BF);      // wait until byte received  
+    return (SSP1BUF);              // return with read byte 
 }
 
 /********************************************************************
@@ -56,36 +54,28 @@ if( ((SSP1CON1&0x0F)==0x08) || ((SSP1CON1&0x0F)==0x0B) )	//master mode only
 *     Description:      This routine writes a single byte to the    * 
 *                       I2C bus.                                    *
 ********************************************************************/
-signed char WriteI2C( unsigned char data_out )
-{
-  SSP1BUF = data_out;           // write single byte to SSPBUF
-  if ( SSP1CON1bits.WCOL )      // test if write collision occurred
-   return ( -1 );              // if WCOL bit is set return negative #
-  else
-  {
-	if( ((SSP1CON1&0x0F)!=0x08) && ((SSP1CON1&0x0F)!=0x0B) )	//Slave mode only
-	{
-	      SSP1CON1bits.CKP = 1;        // release clock line 
-	      while ( !PIR3bits.SSP1IF );  // wait until ninth clock pulse received
+signed char WriteI2C(unsigned char data_out) {
+    SSP1BUF = data_out;           // write single byte to SSPBUF
+    if ( SSP1CON1bits.WCOL )      // test if write collision occurred
+        return ( -1 );              // if WCOL bit is set return negative #
+    else {
+        if( ((SSP1CON1&0x0F)!=0x08) && ((SSP1CON1&0x0F)!=0x0B) ) {	//Slave mode only
+            SSP1CON1bits.CKP = 1;        // release clock line 
+            while ( !PIR3bits.SSP1IF );  // wait until ninth clock pulse received
 
-	      if ( ( !SSP1STATbits.R_W ) && ( !SSP1STATbits.BF ) )// if R/W=0 and BF=0, NOT ACK was received
-	      {
-	        return ( -2 );           //return NACK
-	      }
-		  else
-		  {
-			return ( 0 );				//return ACK
-		  }	
-	}
-	else if( ((SSP1CON1&0x0F)==0x08) || ((SSP1CON1&0x0F)==0x0B) )	//master mode only
-	{ 
-	    while( SSP1STATbits.BF );   // wait until write cycle is complete   
-	    IdleI2C();                 // ensure module is idle
-	    if ( SSP1CON2bits.ACKSTAT ) // test for ACK condition received
-	    	 return ( -2 );			// return NACK
-		else return ( 0 );              //return ACK
-	}
-	return ( 0 );
-  }
+            if ( ( !SSP1STATbits.R_W ) && ( !SSP1STATbits.BF ) )// if R/W=0 and BF=0, NOT ACK was received
+                return ( -2 );           //return NACK
+            else {
+                return ( 0 );			//return ACK
+            }	
+        } else if( ((SSP1CON1&0x0F)==0x08) || ((SSP1CON1&0x0F)==0x0B) ) {	//master mode only
+            while( SSP1STATbits.BF );   // wait until write cycle is complete   
+            IdleI2C();                 // ensure module is idle
+            if ( SSP1CON2bits.ACKSTAT ) // test for ACK condition received
+                return ( -2 );			// return NACK
+            else return ( 0 );              //return ACK
+        }
+        return ( 0 );
+    }
 }
 

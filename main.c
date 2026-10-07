@@ -44,27 +44,37 @@
 #include "mcc_generated_files/mcc.h"
 #include "I2C/i2c.h"
 #include "LCD/lcd.h"
+#include "EEPROM/config_storage.h"
+#include "Time/Time.h"
 #include "stdio.h"
 
-/*
-                         Main application
- */
+time_t current_time;
 
-unsigned char readTC74 (void)
-{
-	unsigned char value;
-do{
-	IdleI2C();
-	StartI2C(); IdleI2C();
+void Timer1_counter(void) {
+    // Simple debouncing
+    __delay_ms(5);
     
-	WriteI2C(0x9a | 0x00); IdleI2C();
-	WriteI2C(0x01); IdleI2C();
-	RestartI2C(); IdleI2C();
-	WriteI2C(0x9a | 0x01); IdleI2C();
-	value = ReadI2C(); IdleI2C();
-	NotAckI2C(); IdleI2C();
-	StopI2C();
-} while (!(value & 0x40));
+    // Increment time variable
+    Time_increment(&current_time);
+    
+    // Clear interrupt flag
+    PIR4bits.TMR1IF = 0;
+}
+
+unsigned char readTC74 (void) {
+	unsigned char value;
+    do {
+        IdleI2C();
+        StartI2C(); IdleI2C();
+
+        WriteI2C(0x9a | 0x00); IdleI2C();
+        WriteI2C(0x01); IdleI2C();
+        RestartI2C(); IdleI2C();
+        WriteI2C(0x9a | 0x01); IdleI2C();
+        value = ReadI2C(); IdleI2C();
+        NotAckI2C(); IdleI2C();
+        StopI2C();
+    } while (!(value & 0x40));
 
 	IdleI2C();
 	StartI2C(); IdleI2C();
@@ -79,22 +89,18 @@ do{
 	return value;
 }
 
-void main(void)
-{    
+void main(void) {    
     unsigned char c;
     char buf[17];
 
     // initialize the device
     SYSTEM_Initialize();
 
-    // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
-    // Use the following macros to:
-
     // Enable the Global Interrupts
-    //INTERRUPT_GlobalInterruptEnable();
+    INTERRUPT_GlobalInterruptEnable();
 
     // Enable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptEnable();
+    INTERRUPT_PeripheralInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
@@ -102,16 +108,34 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
 
+    // Initialize I2C
     OpenI2C();
-    //I2C_SCL = 1;
-    //I2C_SDA = 1;
-    //WPUC3 = 1;
-    //WPUC4 = 1;
+    
+    // Initialize LCD
     LCDinit();
+    
+    // Initialize memory
+    memory_flag_t m_flag = memory_init();
+    if (m_flag == MEM_CORRUPTED) {
+        memory_reset();
+    }
+    
+    // Setting Timer 1 interrupt handler
+    TMR1_SetInterruptHandler(Timer1_counter);
+    
+    // Stop Timer 1
+    TMR1_StopTimer();
+    
+    // Reload Timer value
+    TMR1_WriteTimer((uint16_t)0x00);
+    
+    // Reset time variable
+    Time_reset(&current_time);
+    
+    // Start Timer 1
+    TMR1_StartTimer();
 
-    while (1)
-    {
-        // Add your application code
+    while (1) {
         
         c = readTC74();
         LCDcmd(0x80);       //first line, first column
@@ -127,6 +151,3 @@ void main(void)
         __delay_ms(2000);
     }
 }
-/**
- End of File
-*/

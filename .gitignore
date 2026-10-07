@@ -2,3 +2,5 @@ dist/
 build/
 .vscode/
 *.log
+_build/
+cmake/

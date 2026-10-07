@@ -20,62 +20,35 @@
  */
 
 /* 
- * File:   config_storage.h
+ * File:   Time.h
  * Author: Tomás Seabra
  * Comments:
  * Revision history: 
  */
- 
-#ifndef CONFIG_STORAGE_H
-#define	CONFIG_STORAGE_H
 
-#include <xc.h>
-#include "..\mcc_generated_files/memory.h"
+// This is a guard condition so that contents of this file are not included
+// more than once.  
+#ifndef XC_HEADER_TEMPLATE_H
+#define	XC_HEADER_TEMPLATE_H
 
-#define MW 0xA5
+#include <xc.h>  
+#include "../mcc_generated_files/tmr1.h"
 
-#define PMON_DEFAULT 5
-#define TALA_DEFAULT 3
-#define ALAF_DEFAULT 0
-#define ALAH_DEFAULT 12
-#define ALAM_DEFAULT 0
-#define ALAS_DEFAULT 0
-#define ALAT_DEFAULT 25
-#define ALAL_DEFAULT 3
-#define CLKH_DEFAULT 0
-#define CLKM_DEFAULT 0
+typedef struct {
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+} time_t;
 
-typedef enum {
-    parameter_START,
-            
-    PMON,  // monitoring period
-    TALA,  // duration of alarm signal
-    ALAF,  // alarm fag
-    ALAH,  // alarm clock hours
-    ALAM,  // alarm clock minutes
-    ALAS,  // alarm clock seconds
-    ALAT,  // threshold for temperature alarm
-    ALAL,  // threshold for luminosity level alarm
-    CLKH,  // clock hours
-    CLKM,   // clock minutes
-            
-    parameter_END
-} parameter_t;
+int Time_reset(time_t* time);
 
-typedef enum {
-    MEM_OK,         // no error
-         
-    MEM_CORRUPTED,  // data corrupted
-    MEM_API_ERROR   // api error
-} memory_flag_t;
+int Time_increment(time_t *time);
 
-memory_flag_t memory_init(void);
+int Time_setHours(time_t *time, uint8_t hours);
 
-memory_flag_t write_parameter(parameter_t parameter, uint8_t buffer);
+int Time_setMinutes(time_t *time, uint8_t minutes);
 
-memory_flag_t read_parameter(parameter_t parameter, uint8_t* buffer);
+int Time_setSeconds(time_t *time, uint8_t seconds);
 
-void memory_reset(void);
-
-#endif	
+#endif
 
