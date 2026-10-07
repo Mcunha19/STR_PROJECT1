@@ -71,14 +71,14 @@ void TMR1_Initialize(void)
     //GSS T1G_pin; 
     T1GATE = 0x00;
 
-    //CS SOSC; 
-    T1CLK = 0x06;
+    //CS LFINTOSC; 
+    T1CLK = 0x04;
 
     //TMR1H 240; 
     TMR1H = 0xF0;
 
-    //TMR1L 0; 
-    TMR1L = 0x00;
+    //TMR1L 221; 
+    TMR1L = 0xDD;
 
     // Clearing IF flag before enabling the interrupt.
     PIR4bits.TMR1IF = 0;
