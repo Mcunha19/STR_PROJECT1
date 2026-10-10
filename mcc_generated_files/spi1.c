@@ -65,6 +65,7 @@ void SPI1_Initialize(void)
     SSP1CLKPPS = 19;
     SSP1DATPPS = 20;
     RC3PPS    = 20;
+    RC4PPS    = 21;
     //SPI setup
     SSP1STAT = 0x40;
     SSP1CON1 = 0x00;

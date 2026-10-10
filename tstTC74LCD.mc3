@@ -5320,7 +5320,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="ODCONC"/>
-         <value>24</value>
+         <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="ODCOND"/>
@@ -5412,7 +5412,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="RC4PPS"/>
-         <value>0</value>
+         <value>21</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="RC5PPS"/>
@@ -6500,11 +6500,11 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ODCONC" settingAlias="ODCC3"/>
-         <value>enabled</value>
+         <value>disabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ODCONC" settingAlias="ODCC4"/>
-         <value>enabled</value>
+         <value>disabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="ODCONC" settingAlias="ODCC5"/>
@@ -6644,7 +6644,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="RC4PPS" settingAlias="RC4PPS"/>
-         <value>0</value>
+         <value>21</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="RC5PPS" settingAlias="RC5PPS"/>
@@ -8133,16 +8133,16 @@
    </tokenMap>
    <generatedFileHashHistoryMap class="java.util.HashMap">
       <entry>
+         <file>mcc_generated_files\interrupt_manager.h</file>
+         <hash>9737284fa073792fb28af7e1193204efd07df4e7c0668e04a864f0388f69a9f3</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files\mcc.h</file>
          <hash>b28e3490cb435b012eee006b1b048bbbf87605c18447d0ae7d3983c69a18c48e</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\device_config.h</file>
          <hash>6318da2cf993462c1f121d788cfe7914decb74cadb031e0d022a1920ab562b30</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\interrupt_manager.h</file>
-         <hash>9737284fa073792fb28af7e1193204efd07df4e7c0668e04a864f0388f69a9f3</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\tmr1.h</file>
@@ -8170,19 +8170,19 @@
       </entry>
       <entry>
          <file>mcc_generated_files\spi1.c</file>
-         <hash>af801990160cd6fb333b205362e0cb6a3d12f2a92b42bb2626ae2e8a854732f2</hash>
+         <hash>9dd64c9b5221a35d12516c40571efe282282309dc4267812a6be85f06615d360</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\pin_manager.c</file>
-         <hash>fdd27ec2634853720554ce0984dbe300e38644729d31b904fb31ef6f5aa24756</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\mcc.c</file>
-         <hash>4d53f4efe24294482dc6db1c26e1849f206191bc932493bd03324a59151b13a8</hash>
+         <hash>385d6dd9688730bbed865cb0edf6de27f6e3ab4a3cca3a88fa15b6ab7d4d97ff</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\interrupt_manager.c</file>
          <hash>0eee817062759d891ca4c83a075f83d6334a43ddce17c72dceffe150a4721d90</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\mcc.c</file>
+         <hash>4d53f4efe24294482dc6db1c26e1849f206191bc932493bd03324a59151b13a8</hash>
       </entry>
    </generatedFileHashHistoryMap>
 </config>

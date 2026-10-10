@@ -11,7 +11,6 @@ static UI_State state = UI_NORMAL;
 static uint32_t state_started_ms;
 static uint32_t last_draw_ms;
 static uint8_t redraw = 1u;
-static uint8_t alarm_edit_field;
 
 static void ui_write_line(uint8_t row, const char *text)
 {
@@ -132,49 +131,45 @@ static void ui_draw_config(const ui_display_data_t *data)
     uint8_t row = 0u;
     uint8_t column = 0u;
 
-    if (state == UI_CONFIG_H || state == UI_CONFIG_M ||
-        state == UI_CONFIG_S) {
+    if (state == UI_CONFIG_CLKH || state == UI_CONFIG_CLKM ||
+        state == UI_CONFIG_CLKS) {
         ui_write_line(0, "Clock ");
         LCDpos(0, 6);
         ui_write_clock(&data->current_time);
-        ui_write_line(1, "Alarm ");
-        LCDpos(1, 6);
-        ui_write_clock(&data->alarm_time);
 
-        if (state == UI_CONFIG_H)
+        if (state == UI_CONFIG_CLKH)
             column = 6u;
-        else if (state == UI_CONFIG_M)
+        else if (state == UI_CONFIG_CLKM)
             column = 9u;
         else
             column = 12u;
-    } else if (state == UI_CONFIG_C || state == UI_CONFIG_C_EDIT) {
+    } else if (state == UI_CONFIG_C_ALAH || state == UI_CONFIG_C_ALAM || 
+        state == UI_CONFIG_C_ALAS) {
         ui_write_line(0, "Alarm ");
         LCDpos(0, 6);
         ui_write_clock(&data->alarm_time);
-        ui_write_line(1, "S1 next  S2 edit");
 
-        if (state == UI_CONFIG_C_EDIT) {
-            row = 0u;
-            column = (uint8_t)(6u + (alarm_edit_field * 3u));
-        } else {
-            row = 1u;
-            column = 11u;
-        }
-    } else if (state == UI_CONFIG_T || state == UI_CONFIG_T_EDIT) {
+        if (state == UI_CONFIG_C_ALAH)
+            column = 6u;
+        else if (state == UI_CONFIG_C_ALAM)
+            column = 9u;
+        else
+            column = 12u;
+    } else if (state == UI_CONFIG_T || state == UI_CONFIG_T_ALAT) {
         ui_write_line(0, "Temperature");
         ui_write_line(1, "Threshold: ");
         LCDpos(1, 11);
         ui_write_temperature((int8_t)data->temperature_threshold);
         row = 1u;
         column = 11u;
-    } else if (state == UI_CONFIG_L || state == UI_CONFIG_L_EDIT) {
+    } else if (state == UI_CONFIG_L || state == UI_CONFIG_L_ALAL) {
         ui_write_line(0, "Luminosity");
         ui_write_line(1, "Threshold: ");
         LCDpos(1, 11);
         ui_write_luminosity(data->luminosity_threshold);
         row = 1u;
         column = 11u;
-    } else if (state == UI_CONFIG_ALARM) {
+    } else if (state == UI_CONFIG_A_ALAF) {
         ui_write_line(0, data->alarms_enabled
                       ? "Alarm: enabled" : "Alarm: disabled");
         ui_write_line(1, "S1 next  S2 tog");
@@ -182,7 +177,7 @@ static void ui_draw_config(const ui_display_data_t *data)
         column = 12u;
     } else {
         ui_write_line(0, "Reset records?");
-        ui_write_line(1, "S2 yes  S1 exit");
+        ui_write_line(1, "S1 exit  S2 yes");
         row = 1u;
         column = 0u;
     }
@@ -243,10 +238,10 @@ static void ui_draw(const ui_display_data_t *data)
         case UI_SHOW_THRESHOLDS:
             ui_draw_thresholds(data);
             break;
-        case UI_SHOW_TEMP:
+        case UI_SHOW_RECORDS_TEMP:
             ui_draw_temperature_records(data);
             break;
-        case UI_SHOW_LUM:
+        case UI_SHOW_RECORDS_LUM:
             ui_draw_luminosity_records(data);
             break;
         default:
@@ -288,12 +283,21 @@ static void ui_update_threshold(uint8_t *threshold, uint8_t maximum,
     }
 }
 
+static void clear_record(ui_record_t *record)
+{
+    record->timestamp.hour = 0u;
+    record->timestamp.minute = 0u;
+    record->timestamp.second = 0u;
+    record->temperature = 0;
+    record->luminosity = 0u;
+}
+
 static void ui_reset_records(ui_display_data_t *data)
 {
-    data->maximum_temperature = 0u;
-    data->minimum_temperature = 0u;
-    data->maximum_luminosity = 0u;
-    data->minimum_luminosity = 0u;
+    clear_record(&data->maximum_temperature);
+    clear_record(&data->minimum_temperature);
+    clear_record(&data->maximum_luminosity);
+    clear_record(&data->minimum_luminosity);
 }
 
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
@@ -308,31 +312,31 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
                 data->alarm_notifications = 0u;
                 ui_enter(UI_SHOW_THRESHOLDS, now_ms);
             } else if (s2_pressed) {
-                ui_enter(UI_SHOW_TEMP, now_ms);
+                ui_enter(UI_SHOW_RECORDS_TEMP, now_ms);
             }
             break;
 
         case UI_SHOW_THRESHOLDS:
             if (s1_pressed)
-                ui_enter(UI_CONFIG_H, now_ms);
+                ui_enter(UI_CONFIG_CLKH, now_ms);
             else if ((uint32_t)(now_ms - state_started_ms) >= UI_THRESHOLDS_MS)
                 ui_enter(UI_NORMAL, now_ms);
             break;
 
-        case UI_SHOW_TEMP:
-        case UI_SHOW_LUM:
+        case UI_SHOW_RECORDS_TEMP:
+        case UI_SHOW_RECORDS_LUM:
             ui_update_timed_screen(
-                state == UI_SHOW_TEMP ? UI_SHOW_LUM : UI_NORMAL, now_ms);
+                state == UI_SHOW_RECORDS_TEMP ? UI_SHOW_RECORDS_LUM : UI_NORMAL, now_ms);
             break;
 
-        case UI_CONFIG_H:
-        case UI_CONFIG_M:
-        case UI_CONFIG_S:
+        case UI_CONFIG_CLKH:
+        case UI_CONFIG_CLKM:
+        case UI_CONFIG_CLKS:
             if (s1_pressed) {
-                ui_enter((UI_State)(state + 1), now_ms);
+                ui_enter(state + 1, now_ms);
             } else if (s2_pressed) {
                 ui_increment_time_field(&data->current_time,
-                                        (uint8_t)(state - UI_CONFIG_H));
+                                        (uint8_t)(state - UI_CONFIG_CLKH));
                 redraw = 1u;
             }
             break;
@@ -341,47 +345,46 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
             if (s1_pressed)
                 ui_enter(UI_CONFIG_T, now_ms);
             else if (s2_pressed) {
-                alarm_edit_field = 0u;
-                ui_enter(UI_CONFIG_C_EDIT, now_ms);
+                ui_enter(UI_CONFIG_C_ALAH, now_ms);
             }
             break;
 
-        case UI_CONFIG_C_EDIT:
+        case UI_CONFIG_C_ALAH:
+        case UI_CONFIG_C_ALAM:
+        case UI_CONFIG_C_ALAS:
             if (s1_pressed) {
-                if (++alarm_edit_field >= 3u)
-                    ui_enter(UI_CONFIG_T, now_ms);
-                else
-                    redraw = 1u;
+                ui_enter(state + 1, now_ms);
             } else if (s2_pressed) {
-                ui_increment_time_field(&data->alarm_time, alarm_edit_field);
+                ui_increment_time_field(&data->alarm_time, 
+                                        (uint8_t)(state - UI_CONFIG_C_ALAH));
                 redraw = 1u;
             }
             break;
 
         case UI_CONFIG_T:
-        case UI_CONFIG_T_EDIT:
+        case UI_CONFIG_T_ALAT:
             ui_update_threshold(&data->temperature_threshold, 50u,
-                                UI_CONFIG_T_EDIT, UI_CONFIG_L,
+                                UI_CONFIG_T_ALAT, UI_CONFIG_L,
                                 s1_pressed, s2_pressed, now_ms);
             break;
 
         case UI_CONFIG_L:
-        case UI_CONFIG_L_EDIT:
+        case UI_CONFIG_L_ALAL:
             ui_update_threshold(&data->luminosity_threshold, 7u,
-                                UI_CONFIG_L_EDIT, UI_CONFIG_ALARM,
+                                UI_CONFIG_L_ALAL, UI_CONFIG_A_ALAF,
                                 s1_pressed, s2_pressed, now_ms);
             break;
 
-        case UI_CONFIG_ALARM:
+        case UI_CONFIG_A_ALAF:
             if (s1_pressed)
-                ui_enter(UI_CONFIG_RESET, now_ms);
+                ui_enter(UI_RECORDS_RESET, now_ms);
             else if (s2_pressed) {
                 data->alarms_enabled = !data->alarms_enabled;
                 redraw = 1u;
             }
             break;
 
-        case UI_CONFIG_RESET:
+        case UI_RECORDS_RESET:
             if (s1_pressed)
                 ui_enter(UI_NORMAL, now_ms);
             else if (s2_pressed) {
