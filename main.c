@@ -47,8 +47,17 @@
 #include "EEPROM/config_storage.h"
 #include "Time/Time.h"
 #include "stdio.h"
+#include "UI/ui.h"
 
 time_t current_time;
+
+ 
+uint8_t getPOTvalue(){
+    int signal = ADCC_GetSingleConversion(RA0)*7/1023;
+    uint8_t value = (uint8_t) signal;
+    return value;
+}
+
 
 void Timer1_counter(void) {
     // Simple debouncing
@@ -56,6 +65,7 @@ void Timer1_counter(void) {
     
     // Increment time variable
     Time_increment(&current_time);
+    IO_RA7_D5_Toggle();
     
     // Clear interrupt flag
     PIR4bits.TMR1IF = 0;
@@ -89,9 +99,20 @@ unsigned char readTC74 (void) {
 	return value;
 }
 
+void getData(ui_display_data_t *data){
+    uint8_t c = (uint8_t) readTC74();
+    int lum = ADCC_GetSingleConversion(RA0)*7/1023;
+    
+    data->temperature = c;
+    data->luminosity = (uint8_t) lum;
+    data->current_time.second = current_time.second;
+    data->current_time.hour = current_time.hour;
+    data->current_time.minute = current_time.minute;
+}
+
 void main(void) {    
-    unsigned char c;
-    char buf[17];
+    //char buf[17];
+    ui_display_data_t data;
 
     // initialize the device
     SYSTEM_Initialize();
@@ -135,19 +156,22 @@ void main(void) {
     // Start Timer 1
     TMR1_StartTimer();
 
+    uint8_t S1_pressed;
+    uint8_t S2_pressed;
+    int time_ms = 0;
+
     while (1) {
+        S1_pressed = 0;
+        S2_pressed = 0;
+        time_ms = time_ms + 1000;
         
-        c = readTC74();
-        LCDcmd(0x80);       //first line, first column
-        while (LCDbusy());
-        LCDstr("Temp");
-        LCDpos(0,8);
-        while (LCDbusy());
-        LCDstr("STR-RTS");
-        LCDcmd(0xc0);       // second line, first column
-        sprintf(buf, "%02d C", c);
-        while (LCDbusy());
-        LCDstr(buf);
-        __delay_ms(2000);
+        getData(&data);
+
+        if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
+        if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
+
+        ui_update(&data,S1_pressed,S2_pressed, time_ms);
+        __delay_ms(1000);
+        
     }
 }

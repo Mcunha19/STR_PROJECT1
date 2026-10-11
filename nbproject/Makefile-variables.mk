@@ -6,5 +6,5 @@
 CND_BASEDIR=`pwd`
 # default configuration
 CND_ARTIFACT_DIR_default=dist/default/production
-CND_ARTIFACT_NAME_default=STR_PROJECT1.production.hex
-CND_ARTIFACT_PATH_default=dist/default/production/STR_PROJECT1.production.hex
+CND_ARTIFACT_NAME_default=projecto.X.production.hex
+CND_ARTIFACT_PATH_default=dist/default/production/projecto.X.production.hex

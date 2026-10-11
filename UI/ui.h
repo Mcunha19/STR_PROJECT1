@@ -2,7 +2,7 @@
 #define UI_H
 
 #include <stdint.h>
-#include "Time.h"
+#include "../Time/Time.h"
 
 typedef enum {
     UI_NORMAL,
@@ -23,6 +23,8 @@ typedef enum {
     UI_CONFIG_A_ALAF,
     UI_RECORDS_RESET
 } UI_State;
+
+extern UI_State state;
 
 #define UI_ALARM_CLOCK 0x01u
 #define UI_ALARM_TEMP  0x02u
@@ -51,5 +53,7 @@ typedef struct {
 
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
                uint8_t s2_pressed, uint32_t now_ms);
+
+
 
 #endif

@@ -1,16 +1,17 @@
 #include <stdint.h>
 #include <stdio.h>
-#include "LCD/lcd.h"
+#include "../LCD/lcd.h"
 #include "ui.h"
 
 #define UI_REFRESH_MS 250u
 #define UI_SCREEN_MS 1000u
 #define UI_THRESHOLDS_MS 2000u
 
-static UI_State state = UI_NORMAL;
+UI_State state = UI_NORMAL;
 static uint32_t state_started_ms;
 static uint32_t last_draw_ms;
 static uint8_t redraw = 1u;
+
 
 static void ui_write_line(uint8_t row, const char *text)
 {
