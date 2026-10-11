@@ -46,11 +46,14 @@
 #include "LCD/lcd.h"
 #include "EEPROM/config_storage.h"
 #include "Time/Time.h"
-#include "stdio.h"
 #include "UI/ui.h"
 
-time_t current_time;
+#include "stdio.h"
+#include "stdbool.h"
 
+time_t current_time;
+bool interrupt_occured;
+bool S1_pressed, S2_pressed;
  
 uint8_t getPOTvalue(){
     int signal = ADCC_GetSingleConversion(RA0)*7/1023;
@@ -59,13 +62,39 @@ uint8_t getPOTvalue(){
 }
 
 
-void Timer1_counter(void) {
+/**
+ * Button press ISR
+ */
+void Button_press(void) {
     // Simple debouncing
-    __delay_ms(5);
+    __delay_ms(10);
+    // TODO: revisit debouncing method
+    
+    if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
+    else if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
+    
+    interrupt_occured = true;
+    
+    EXT_INT_InterruptFlagClear();
+}
+
+
+/**
+ * Timer 1 ISR
+ */
+void Timer1_counter(void) {
     
     // Increment time variable
     Time_increment(&current_time);
     IO_RA7_D5_Toggle();
+    memory_flag_t flag;
+    flag = write_parameter(CLKH, current_time.hour);
+    flag = write_parameter(CLKM, current_time.minute);
+    if (flag == MEM_CORRUPTED) {
+        memory_reset();
+    }
+    
+    interrupt_occured = true;
     
     // Clear interrupt flag
     PIR4bits.TMR1IF = 0;
@@ -102,6 +131,20 @@ unsigned char readTC74 (void) {
 void getData(ui_display_data_t *data){
     uint8_t c = (uint8_t) readTC74();
     int lum = ADCC_GetSingleConversion(RA0)*7/1023;
+    
+    // Fetch memory stored data
+    memory_flag_t flag;
+    do {
+        flag = read_parameter(ALAH, &data->alarm_time.hour);
+        flag = read_parameter(ALAM, &data->alarm_time.minute);
+        flag = read_parameter(ALAS, &data->alarm_time.second);
+        flag = read_parameter(ALAT, &data->temperature_threshold);
+        flag = read_parameter(ALAL, &data->luminosity_threshold);
+        flag = read_parameter(ALAF, &data->alarms_enabled);
+        if (flag == MEM_CORRUPTED) {
+            memory_reset();
+        }
+    } while (flag == MEM_CORRUPTED);
     
     data->temperature = c;
     data->luminosity = (uint8_t) lum;
@@ -155,23 +198,53 @@ void main(void) {
     
     // Start Timer 1
     TMR1_StartTimer();
+    
+    // Setting button press interrupt handler
+    INT_SetInterruptHandler(Button_press);
 
-    uint8_t S1_pressed;
-    uint8_t S2_pressed;
     int time_ms = 0;
 
     while (1) {
-        S1_pressed = 0;
-        S2_pressed = 0;
-        time_ms = time_ms + 1000;
         
-        getData(&data);
-
-        if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
-        if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
-
-        ui_update(&data,S1_pressed,S2_pressed, time_ms);
-        __delay_ms(1000);
+        SLEEP(); // wait for interrupt
+        NOP(); // ensure instruction pre-fetched while sleeping is safe to execute on awakening
+        
+        if (interrupt_occured) {
+            // Fetch data
+            getData(&data);
+            
+            // Update UI
+            ui_update(&data,S1_pressed,S2_pressed, time_ms);
+            
+            // Reset flags
+            interrupt_occured = false;
+            S1_pressed = false;
+            S2_pressed = false;
+            
+            // Update memory
+            memory_flag_t flag;
+            flag = write_parameter(ALAH, data.alarm_time.hour);
+            flag = write_parameter(ALAM, data.alarm_time.minute);
+            flag = write_parameter(ALAS, data.alarm_time.second);
+            flag = write_parameter(ALAT, data.temperature_threshold);
+            flag = write_parameter(ALAL, data.luminosity_threshold);
+            flag = write_parameter(ALAF, data.alarms_enabled);
+            if (flag == MEM_CORRUPTED) {
+                memory_reset();
+            }
+        }
+        
+//        S1_pressed = 0;
+//        S2_pressed = 0;
+//        time_ms = time_ms + 1000;
+//        
+//        getData(&data);
+//
+//        if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
+//        if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
+//
+//        ui_update(&data,S1_pressed,S2_pressed, time_ms);
+//        __delay_ms(1000);
         
     }
 }

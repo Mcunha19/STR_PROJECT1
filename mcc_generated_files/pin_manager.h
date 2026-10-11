@@ -165,6 +165,18 @@
 #define IO_RA7_D5_SetAnalogMode()      do { ANSELAbits.ANSA7 = 1; } while(0)
 #define IO_RA7_D5_SetDigitalMode()     do { ANSELAbits.ANSA7 = 0; } while(0)
 
+// get/set RB0 procedures
+#define RB0_SetHigh()            do { LATBbits.LATB0 = 1; } while(0)
+#define RB0_SetLow()             do { LATBbits.LATB0 = 0; } while(0)
+#define RB0_Toggle()             do { LATBbits.LATB0 = ~LATBbits.LATB0; } while(0)
+#define RB0_GetValue()              PORTBbits.RB0
+#define RB0_SetDigitalInput()    do { TRISBbits.TRISB0 = 1; } while(0)
+#define RB0_SetDigitalOutput()   do { TRISBbits.TRISB0 = 0; } while(0)
+#define RB0_SetPullup()             do { WPUBbits.WPUB0 = 1; } while(0)
+#define RB0_ResetPullup()           do { WPUBbits.WPUB0 = 0; } while(0)
+#define RB0_SetAnalogMode()         do { ANSELBbits.ANSB0 = 1; } while(0)
+#define RB0_SetDigitalMode()        do { ANSELBbits.ANSB0 = 0; } while(0)
+
 // get/set IO_RB4_S1 aliases
 #define IO_RB4_S1_TRIS                 TRISBbits.TRISB4
 #define IO_RB4_S1_LAT                  LATBbits.LATB4
