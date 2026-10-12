@@ -53,7 +53,7 @@
 
 time_t current_time;
 bool interrupt_occured;
-bool S1_pressed, S2_pressed;
+bool S1_press, S2_press, S1_pressed, S2_pressed;
  
 uint8_t getPOTvalue(){
     int signal = ADCC_GetSingleConversion(RA0)*7/1023;
@@ -61,23 +61,47 @@ uint8_t getPOTvalue(){
     return value;
 }
 
+void Button_debounce(void) {
+    // Clear interrupt flag
+    PIR4bits.TMR3IF = 0;
+    
+    // Stop Timer 3
+    TMR3_StopTimer();
+
+    if (S1_press && !IO_RB4_S1_GetValue()) {
+        S1_pressed = true;
+    }
+    else if (S2_press && !IO_RC5_S2_GetValue()) {
+        S2_pressed = true;
+    }
+    
+    // Reset button press flags
+    S1_press = 0;
+    S2_press = 0;
+}
 
 /**
  * Button press ISR
  */
 void Button_press(void) {
     // Simple debouncing
-    __delay_ms(10);
-    // TODO: revisit debouncing method
     
-    if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
-    else if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
+    if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
+    else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
     
     interrupt_occured = true;
     
     EXT_INT_InterruptFlagClear();
-}
 
+    // Setting Timer 3 interrupt handler
+    TMR3_SetInterruptHandler(Button_debounce);
+    // Stop Timer 3
+    TMR3_StopTimer();
+    // Reload Timer value
+    TMR3_Reload();
+    // Start Timer 3
+    TMR3_StartTimer();
+}
 
 /**
  * Timer 1 ISR
@@ -177,6 +201,9 @@ void main(void) {
     
     // Initialize LCD
     LCDinit();
+
+    // Initialize UI
+    ui_init();
     
     // Initialize memory
     memory_flag_t m_flag = memory_init();
@@ -186,35 +213,29 @@ void main(void) {
     
     // Setting Timer 1 interrupt handler
     TMR1_SetInterruptHandler(Timer1_counter);
-    
     // Stop Timer 1
     TMR1_StopTimer();
-    
     // Reload Timer value
-    TMR1_WriteTimer((uint16_t)0x00);
-    
+    TMR1_Reload();
     // Reset time variable
     Time_reset(&current_time);
-    
     // Start Timer 1
     TMR1_StartTimer();
-    
+
     // Setting button press interrupt handler
     INT_SetInterruptHandler(Button_press);
-
-    int time_ms = 0;
 
     while (1) {
         
         SLEEP(); // wait for interrupt
         NOP(); // ensure instruction pre-fetched while sleeping is safe to execute on awakening
         
-        if (interrupt_occured) {
+        if (interrupt_occured || ui_timeout_pending) {
             // Fetch data
             getData(&data);
             
             // Update UI
-            ui_update(&data,S1_pressed,S2_pressed, time_ms);
+            ui_update(&data, S1_pressed, S2_pressed);
             
             // Reset flags
             interrupt_occured = false;

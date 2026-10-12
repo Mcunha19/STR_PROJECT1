@@ -1,0 +1,1144 @@
+[p GLOBOPT AUTOSTATIC IEEE_DBL IEEE_FLT PIC14 PIC14E ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 16F18875 ]
+[d frameptr 6 ]
+"12 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[e E12237 . `uc
+MEM_OK 0
+MEM_CORRUPTED 1
+MEM_API_ERROR 2
+]
+"33
+[e E12223 . `uc
+parameter_START 0
+PMON 1
+TALA 2
+ALAF 3
+ALAH 4
+ALAM 5
+ALAS 6
+ALAT 7
+ALAL 8
+CLKH 9
+CLKM 10
+parameter_END 11
+]
+"59 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[e E12563 . `uc
+channel_VSS 60
+channel_Temp 61
+channel_DAC1 62
+channel_FVR_buf1 63
+]
+"116
+[e E12694 . `uc
+MEM_OK 0
+MEM_CORRUPTED 1
+MEM_API_ERROR 2
+]
+"117
+[e E12680 . `uc
+parameter_START 0
+PMON 1
+TALA 2
+ALAF 3
+ALAH 4
+ALAM 5
+ALAS 6
+ALAT 7
+ALAL 8
+CLKH 9
+CLKM 10
+parameter_END 11
+]
+"108 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\adcc.c
+[e E12219 . `uc
+channel_VSS 60
+channel_Temp 61
+channel_DAC1 62
+channel_FVR_buf1 63
+]
+"77 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\spi1.c
+[e E358 . `uc
+SPI1_DEFAULT 0
+]
+"5 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\lwdiv.c
+[v ___lwdiv __lwdiv `(ui  1 e 2 0 ]
+"10 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"15 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\Umul16.c
+[v ___wmul __wmul `(ui  1 e 2 0 ]
+"4 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\Umul8_16.c
+[v __Umul8_16 _Umul8_16 `(ui  1 e 2 0 ]
+"6 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\pic\__eeprom.c
+[v ___eecpymem __eecpymem `(v  1 e 1 0 ]
+"39
+[v ___memcpyee __memcpyee `(v  1 e 1 0 ]
+"12 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v _memory_init memory_init `(E12237  1 e 1 0 ]
+"33
+[v _write_parameter write_parameter `(E12237  1 e 1 0 ]
+[v i1_write_parameter write_parameter `(E12237  1 e 1 0 ]
+"63
+[v _read_parameter read_parameter `(E12237  1 e 1 0 ]
+"87
+[v _memory_reset memory_reset `(v  1 e 1 0 ]
+[v i1_memory_reset memory_reset `(v  1 e 1 0 ]
+"26 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\I2C\i2c.c
+[v _OpenI2C OpenI2C `(v  1 e 1 0 ]
+"43
+[v _ReadI2C ReadI2C `(uc  1 e 1 0 ]
+"57
+[v _WriteI2C WriteI2C `(c  1 e 1 0 ]
+"17 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\LCD\lcd.c
+[v _LCDsend LCDsend `(v  1 e 1 0 ]
+"26
+[v _LCDrecv LCDrecv `(uc  1 e 1 0 ]
+"57
+[v _LCDsend2x4 LCDsend2x4 `(v  1 e 1 0 ]
+"80
+[v _LCDinit LCDinit `(v  1 e 1 0 ]
+"103
+[v _LCDcmd LCDcmd `(v  1 e 1 0 ]
+"108
+[v _LCDchar LCDchar `(v  1 e 1 0 ]
+"64 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _Button_debounce Button_debounce `(v  1 e 1 0 ]
+"86
+[v _Button_press Button_press `(v  1 e 1 0 ]
+"111
+[v _Timer1_counter Timer1_counter `(v  1 e 1 0 ]
+"129
+[v _readTC74 readTC74 `(uc  1 e 1 0 ]
+"157
+[v _getData getData `(v  1 e 1 0 ]
+"182
+[v _main main `(v  1 e 1 0 ]
+"63 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\adcc.c
+[v _ADCC_Initialize ADCC_Initialize `(v  1 e 1 0 ]
+"132
+[v _ADCC_GetSingleConversion ADCC_GetSingleConversion `(us  1 e 2 0 ]
+"32 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\ext_int.c
+[v _INT_ISR INT_ISR `(v  1 e 1 0 ]
+"41
+[v _INT_CallBack INT_CallBack `(v  1 e 1 0 ]
+"50
+[v _INT_SetInterruptHandler INT_SetInterruptHandler `(v  1 e 1 0 ]
+"54
+[v _INT_DefaultInterruptHandler INT_DefaultInterruptHandler `(v  1 e 1 0 ]
+"59
+[v _EXT_INT_Initialize EXT_INT_Initialize `(v  1 e 1 0 ]
+"53 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\interrupt_manager.c
+[v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `II(v  1 e 1 0 ]
+"50 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\mcc.c
+[v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
+"62
+[v _OSCILLATOR_Initialize OSCILLATOR_Initialize `(v  1 e 1 0 ]
+"76
+[v _PMD_Initialize PMD_Initialize `(v  1 e 1 0 ]
+"50 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\memory.c
+[v _DATAEE_WriteByte DATAEE_WriteByte `(v  1 e 1 0 ]
+[v i1_DATAEE_WriteByte DATAEE_WriteByte `(v  1 e 1 0 ]
+"71
+[v _DATAEE_ReadByte DATAEE_ReadByte `(uc  1 e 1 0 ]
+[v i1_DATAEE_ReadByte DATAEE_ReadByte `(uc  1 e 1 0 ]
+"55 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\pin_manager.c
+[v _PIN_MANAGER_Initialize PIN_MANAGER_Initialize `(v  1 e 1 0 ]
+"136
+[v _PIN_MANAGER_IOC PIN_MANAGER_IOC `(v  1 e 1 0 ]
+"62 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\spi1.c
+[v _SPI1_Initialize SPI1_Initialize `(v  1 e 1 0 ]
+"97
+[v _SPI1_ExchangeByte SPI1_ExchangeByte `(uc  1 e 1 0 ]
+"64 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\tmr1.c
+[v _TMR1_Initialize TMR1_Initialize `(v  1 e 1 0 ]
+"99
+[v _TMR1_StartTimer TMR1_StartTimer `(v  1 e 1 0 ]
+"105
+[v _TMR1_StopTimer TMR1_StopTimer `(v  1 e 1 0 ]
+"127
+[v _TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
+[v i1_TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
+"149
+[v _TMR1_Reload TMR1_Reload `(v  1 e 1 0 ]
+"164
+[v _TMR1_ISR TMR1_ISR `(v  1 e 1 0 ]
+"178
+[v _TMR1_SetInterruptHandler TMR1_SetInterruptHandler `(v  1 e 1 0 ]
+"182
+[v _TMR1_DefaultInterruptHandler TMR1_DefaultInterruptHandler `(v  1 e 1 0 ]
+"9 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\Time\Time.c
+[v _Time_reset Time_reset `(i  1 e 2 0 ]
+"19
+[v _Time_increment Time_increment `(i  1 e 2 0 ]
+[s S1013 . 1 `uc 1 INTEDG 1 0 :1:0 
+`uc 1 . 1 0 :5:1 
+`uc 1 PEIE 1 0 :1:6 
+`uc 1 GIE 1 0 :1:7 
+]
+"364 C:/Users/mamot/.mchp_packs/Microchip/PIC16F1xxxx_DFP/1.24.387/xc8\pic\include\proc/pic16f18875.h
+[u S1018 . 1 `S1013 1 . 1 0 ]
+[v _INTCONbits INTCONbits `VES1018  1 e 1 @11 ]
+[s S728 . 1 `uc 1 RB0 1 0 :1:0 
+`uc 1 RB1 1 0 :1:1 
+`uc 1 RB2 1 0 :1:2 
+`uc 1 RB3 1 0 :1:3 
+`uc 1 RB4 1 0 :1:4 
+`uc 1 RB5 1 0 :1:5 
+`uc 1 RB6 1 0 :1:6 
+`uc 1 RB7 1 0 :1:7 
+]
+"463
+[u S737 . 1 `S728 1 . 1 0 ]
+[v _PORTBbits PORTBbits `VES737  1 e 1 @13 ]
+[s S749 . 1 `uc 1 RC0 1 0 :1:0 
+`uc 1 RC1 1 0 :1:1 
+`uc 1 RC2 1 0 :1:2 
+`uc 1 RC3 1 0 :1:3 
+`uc 1 RC4 1 0 :1:4 
+`uc 1 RC5 1 0 :1:5 
+`uc 1 RC6 1 0 :1:6 
+`uc 1 RC7 1 0 :1:7 
+]
+"525
+[u S758 . 1 `S749 1 . 1 0 ]
+[v _PORTCbits PORTCbits `VES758  1 e 1 @14 ]
+"670
+[v _TRISA TRISA `VEuc  1 e 1 @17 ]
+"732
+[v _TRISB TRISB `VEuc  1 e 1 @18 ]
+"794
+[v _TRISC TRISC `VEuc  1 e 1 @19 ]
+[s S122 . 1 `uc 1 TRISC0 1 0 :1:0 
+`uc 1 TRISC1 1 0 :1:1 
+`uc 1 TRISC2 1 0 :1:2 
+`uc 1 TRISC3 1 0 :1:3 
+`uc 1 TRISC4 1 0 :1:4 
+`uc 1 TRISC5 1 0 :1:5 
+`uc 1 TRISC6 1 0 :1:6 
+`uc 1 TRISC7 1 0 :1:7 
+]
+"811
+[u S131 . 1 `S122 1 . 1 0 ]
+[v _TRISCbits TRISCbits `VES131  1 e 1 @19 ]
+"856
+[v _TRISD TRISD `VEuc  1 e 1 @20 ]
+"918
+[v _TRISE TRISE `VEuc  1 e 1 @21 ]
+"950
+[v _LATA LATA `VEuc  1 e 1 @22 ]
+[s S798 . 1 `uc 1 LATA0 1 0 :1:0 
+`uc 1 LATA1 1 0 :1:1 
+`uc 1 LATA2 1 0 :1:2 
+`uc 1 LATA3 1 0 :1:3 
+`uc 1 LATA4 1 0 :1:4 
+`uc 1 LATA5 1 0 :1:5 
+`uc 1 LATA6 1 0 :1:6 
+`uc 1 LATA7 1 0 :1:7 
+]
+"967
+[u S807 . 1 `S798 1 . 1 0 ]
+[v _LATAbits LATAbits `VES807  1 e 1 @22 ]
+"1012
+[v _LATB LATB `VEuc  1 e 1 @23 ]
+"1074
+[v _LATC LATC `VEuc  1 e 1 @24 ]
+"1136
+[v _LATD LATD `VEuc  1 e 1 @25 ]
+"1198
+[v _LATE LATE `VEuc  1 e 1 @26 ]
+"1805
+[v _ADRESL ADRESL `VEuc  1 e 1 @140 ]
+"1825
+[v _ADRESH ADRESH `VEuc  1 e 1 @141 ]
+"1839
+[v _ADPREVL ADPREVL `VEuc  1 e 1 @142 ]
+"1909
+[v _ADPREVH ADPREVH `VEuc  1 e 1 @143 ]
+"1986
+[v _ADACCL ADACCL `VEuc  1 e 1 @144 ]
+"2056
+[v _ADACCH ADACCH `VEuc  1 e 1 @145 ]
+"2126
+[v _ADCON0 ADCON0 `VEuc  1 e 1 @147 ]
+[s S1266 . 1 `uc 1 ADGO 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFM 1 0 :2:2 
+`uc 1 ADCS 1 0 :1:4 
+`uc 1 . 1 0 :1:5 
+`uc 1 ADCONT 1 0 :1:6 
+`uc 1 ADON 1 0 :1:7 
+]
+"2162
+[s S1274 . 1 `uc 1 DONE 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFRM 1 0 :2:2 
+]
+[s S1278 . 1 `uc 1 nDONE 1 0 :1:0 
+]
+[s S1280 . 1 `uc 1 GO 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFM0 1 0 :1:2 
+`uc 1 ADFM1 1 0 :1:3 
+]
+[s S1285 . 1 `uc 1 GO_nDONE 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFRM0 1 0 :1:2 
+`uc 1 ADFRM1 1 0 :1:3 
+]
+[u S1290 . 1 `S1266 1 . 1 0 `S1274 1 . 1 0 `S1278 1 . 1 0 `S1280 1 . 1 0 `S1285 1 . 1 0 ]
+[v _ADCON0bits ADCON0bits `VES1290  1 e 1 @147 ]
+"2237
+[v _ADCON1 ADCON1 `VEuc  1 e 1 @148 ]
+[s S1417 . 1 `uc 1 ADDSEN 1 0 :1:0 
+`uc 1 . 1 0 :4:1 
+`uc 1 ADGPOL 1 0 :1:5 
+`uc 1 ADIPEN 1 0 :1:6 
+`uc 1 ADPPOL 1 0 :1:7 
+]
+"2251
+[u S1423 . 1 `S1417 1 . 1 0 ]
+[v _ADCON1bits ADCON1bits `VES1423  1 e 1 @148 ]
+"2276
+[v _ADCON2 ADCON2 `VEuc  1 e 1 @149 ]
+[s S1353 . 1 `uc 1 ADMD 1 0 :3:0 
+`uc 1 ADACLR 1 0 :1:3 
+`uc 1 ADCRS 1 0 :3:4 
+`uc 1 ADPSIS 1 0 :1:7 
+]
+"2298
+[s S1358 . 1 `uc 1 ADMD0 1 0 :1:0 
+`uc 1 ADMD1 1 0 :1:1 
+`uc 1 ADMD2 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADCRS0 1 0 :1:4 
+`uc 1 ADCRS1 1 0 :1:5 
+`uc 1 ADCRS2 1 0 :1:6 
+]
+[u S1366 . 1 `S1353 1 . 1 0 `S1358 1 . 1 0 ]
+[v _ADCON2bits ADCON2bits `VES1366  1 e 1 @149 ]
+"2353
+[v _ADCON3 ADCON3 `VEuc  1 e 1 @150 ]
+[s S1324 . 1 `uc 1 ADTMD0 1 0 :1:0 
+`uc 1 ADTMD1 1 0 :1:1 
+`uc 1 ADTMD2 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADCALC0 1 0 :1:4 
+`uc 1 ADCALC1 1 0 :1:5 
+`uc 1 ADCALC2 1 0 :1:6 
+]
+"2374
+[s S1332 . 1 `uc 1 ADTMD 1 0 :3:0 
+`uc 1 ADSOI 1 0 :1:3 
+`uc 1 ADCALC 1 0 :3:4 
+]
+[u S1336 . 1 `S1324 1 . 1 0 `S1332 1 . 1 0 ]
+[v _ADCON3bits ADCON3bits `VES1336  1 e 1 @150 ]
+"2424
+[v _ADSTAT ADSTAT `VEuc  1 e 1 @151 ]
+[s S1385 . 1 `uc 1 ADSTAT 1 0 :3:0 
+`uc 1 ADMACT 1 0 :1:3 
+`uc 1 ADMATH 1 0 :1:4 
+`uc 1 ADLTHR 1 0 :1:5 
+`uc 1 ADUTHR 1 0 :1:6 
+`uc 1 ADAOV 1 0 :1:7 
+]
+"2444
+[s S1392 . 1 `uc 1 ADSTAT0 1 0 :1:0 
+`uc 1 ADSTAT1 1 0 :1:1 
+`uc 1 ADSTAT2 1 0 :1:2 
+]
+[u S1396 . 1 `S1385 1 . 1 0 `S1392 1 . 1 0 ]
+[v _ADSTATbits ADSTATbits `VES1396  1 e 1 @151 ]
+"2494
+[v _ADCLK ADCLK `VEuc  1 e 1 @152 ]
+"2552
+[v _ADACT ADACT `VEuc  1 e 1 @153 ]
+"2604
+[v _ADREF ADREF `VEuc  1 e 1 @154 ]
+"2645
+[v _ADCAP ADCAP `VEuc  1 e 1 @155 ]
+"2697
+[v _ADPRE ADPRE `VEuc  1 e 1 @156 ]
+"2767
+[v _ADACQ ADACQ `VEuc  1 e 1 @157 ]
+"2837
+[v _ADPCH ADPCH `VEuc  1 e 1 @158 ]
+"2895
+[v _ADCNT ADCNT `VEuc  1 e 1 @268 ]
+"2965
+[v _ADRPT ADRPT `VEuc  1 e 1 @269 ]
+"3042
+[v _ADLTHL ADLTHL `VEuc  1 e 1 @270 ]
+"3112
+[v _ADLTHH ADLTHH `VEuc  1 e 1 @271 ]
+"3189
+[v _ADUTHL ADUTHL `VEuc  1 e 1 @272 ]
+"3259
+[v _ADUTHH ADUTHH `VEuc  1 e 1 @273 ]
+"3336
+[v _ADSTPTL ADSTPTL `VEuc  1 e 1 @274 ]
+"3406
+[v _ADSTPTH ADSTPTH `VEuc  1 e 1 @275 ]
+"3483
+[v _ADFLTRL ADFLTRL `VEuc  1 e 1 @276 ]
+"3553
+[v _ADFLTRH ADFLTRH `VEuc  1 e 1 @277 ]
+"3630
+[v _ADERRL ADERRL `VEuc  1 e 1 @278 ]
+"3700
+[v _ADERRH ADERRH `VEuc  1 e 1 @279 ]
+"4604
+[v _SSP1BUF SSP1BUF `VEuc  1 e 1 @396 ]
+"4624
+[v _SSP1ADD SSP1ADD `VEuc  1 e 1 @397 ]
+"4814
+[v _SSP1STAT SSP1STAT `VEuc  1 e 1 @399 ]
+[s S220 . 1 `uc 1 BF 1 0 :1:0 
+`uc 1 UA 1 0 :1:1 
+`uc 1 R_nW 1 0 :1:2 
+`uc 1 S 1 0 :1:3 
+`uc 1 P 1 0 :1:4 
+`uc 1 D_nA 1 0 :1:5 
+`uc 1 CKE 1 0 :1:6 
+`uc 1 SMP 1 0 :1:7 
+]
+"4923
+[s S229 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 R_W 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 D_A 1 0 :1:5 
+]
+[s S234 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 nW 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 nA 1 0 :1:5 
+]
+[s S239 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 nWRITE 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 nADDRESS 1 0 :1:5 
+]
+[s S244 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 READ_WRITE 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 DATA_ADDRESS 1 0 :1:5 
+]
+[s S249 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 I2C_READ 1 0 :1:2 
+`uc 1 I2C_START 1 0 :1:3 
+`uc 1 I2C_STOP 1 0 :1:4 
+`uc 1 I2C_DAT 1 0 :1:5 
+]
+[s S255 . 1 `uc 1 BF1 1 0 :1:0 
+`uc 1 UA1 1 0 :1:1 
+`uc 1 R 1 0 :1:2 
+`uc 1 START 1 0 :1:3 
+`uc 1 STOP 1 0 :1:4 
+`uc 1 D 1 0 :1:5 
+`uc 1 CKE1 1 0 :1:6 
+`uc 1 SMP1 1 0 :1:7 
+]
+[s S264 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 RW 1 0 :1:2 
+`uc 1 START1 1 0 :1:3 
+`uc 1 STOP1 1 0 :1:4 
+`uc 1 DA 1 0 :1:5 
+]
+[s S270 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 RW1 1 0 :1:2 
+`uc 1 I2C_START1 1 0 :1:3 
+`uc 1 I2C_STOP2 1 0 :1:4 
+`uc 1 DA1 1 0 :1:5 
+]
+[s S276 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 I2C_READ1 1 0 :1:2 
+`uc 1 S2 1 0 :1:3 
+`uc 1 P2 1 0 :1:4 
+`uc 1 DATA_ADDRESS1 1 0 :1:5 
+]
+[s S282 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 READ_WRITE1 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 D_A1 1 0 :1:5 
+]
+[s S287 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 R_W1 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 D_nA1 1 0 :1:5 
+]
+[s S292 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 R_nW1 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 I2C_DAT1 1 0 :1:5 
+]
+[s S297 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 nW2 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 nA2 1 0 :1:5 
+]
+[s S302 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 nWRITE1 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 nADDRESS1 1 0 :1:5 
+]
+[u S307 . 1 `S220 1 . 1 0 `S229 1 . 1 0 `S234 1 . 1 0 `S239 1 . 1 0 `S244 1 . 1 0 `S249 1 . 1 0 `S255 1 . 1 0 `S264 1 . 1 0 `S270 1 . 1 0 `S276 1 . 1 0 `S282 1 . 1 0 `S287 1 . 1 0 `S292 1 . 1 0 `S297 1 . 1 0 `S302 1 . 1 0 ]
+[v _SSP1STATbits SSP1STATbits `VES307  1 e 1 @399 ]
+"5178
+[v _SSP1CON1 SSP1CON1 `VEuc  1 e 1 @400 ]
+[s S77 . 1 `uc 1 SSPM 1 0 :4:0 
+`uc 1 CKP 1 0 :1:4 
+`uc 1 SSPEN 1 0 :1:5 
+`uc 1 SSPOV 1 0 :1:6 
+`uc 1 WCOL 1 0 :1:7 
+]
+"5208
+[s S83 . 1 `uc 1 SSPM0 1 0 :1:0 
+`uc 1 SSPM1 1 0 :1:1 
+`uc 1 SSPM2 1 0 :1:2 
+`uc 1 SSPM3 1 0 :1:3 
+]
+[s S88 . 1 `uc 1 SSPM01 1 0 :1:0 
+`uc 1 SSPM11 1 0 :1:1 
+`uc 1 SSPM21 1 0 :1:2 
+`uc 1 SSPM31 1 0 :1:3 
+`uc 1 CKP1 1 0 :1:4 
+`uc 1 SSPEN1 1 0 :1:5 
+`uc 1 SSPOV1 1 0 :1:6 
+`uc 1 WCOL1 1 0 :1:7 
+]
+[u S97 . 1 `S77 1 . 1 0 `S83 1 . 1 0 `S88 1 . 1 0 ]
+[v _SSP1CON1bits SSP1CON1bits `VES97  1 e 1 @400 ]
+"5298
+[v _SSP1CON2 SSP1CON2 `VEuc  1 e 1 @401 ]
+[s S143 . 1 `uc 1 SEN 1 0 :1:0 
+`uc 1 RSEN 1 0 :1:1 
+`uc 1 PEN 1 0 :1:2 
+`uc 1 RCEN 1 0 :1:3 
+`uc 1 ACKEN 1 0 :1:4 
+`uc 1 ACKDT 1 0 :1:5 
+`uc 1 ACKSTAT 1 0 :1:6 
+`uc 1 GCEN 1 0 :1:7 
+]
+"5345
+[s S152 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 ADMSK 1 0 :5:1 
+]
+[s S155 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 ADMSK1 1 0 :1:1 
+`uc 1 ADMSK2 1 0 :1:2 
+`uc 1 ADMSK3 1 0 :1:3 
+`uc 1 ADMSK4 1 0 :1:4 
+`uc 1 ADMSK5 1 0 :1:5 
+]
+[s S162 . 1 `uc 1 SEN1 1 0 :1:0 
+`uc 1 ADMSK11 1 0 :1:1 
+`uc 1 ADMSK21 1 0 :1:2 
+`uc 1 ADMSK31 1 0 :1:3 
+`uc 1 ACKEN1 1 0 :1:4 
+`uc 1 ACKDT1 1 0 :1:5 
+`uc 1 ACKSTAT1 1 0 :1:6 
+`uc 1 GCEN1 1 0 :1:7 
+]
+[s S171 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 RSEN1 1 0 :1:1 
+`uc 1 PEN1 1 0 :1:2 
+`uc 1 RCEN1 1 0 :1:3 
+`uc 1 ADMSK41 1 0 :1:4 
+`uc 1 ADMSK51 1 0 :1:5 
+]
+[u S178 . 1 `S143 1 . 1 0 `S152 1 . 1 0 `S155 1 . 1 0 `S162 1 . 1 0 `S171 1 . 1 0 ]
+[v _SSP1CON2bits SSP1CON2bits `VES178  1 e 1 @401 ]
+"6497
+[v _TMR1L TMR1L `VEuc  1 e 1 @524 ]
+"6667
+[v _TMR1H TMR1H `VEuc  1 e 1 @525 ]
+"6787
+[v _T1CON T1CON `VEuc  1 e 1 @526 ]
+[s S1885 . 1 `uc 1 ON 1 0 :1:0 
+`uc 1 RD16 1 0 :1:1 
+`uc 1 nSYNC 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 CKPS 1 0 :2:4 
+]
+"6818
+[s S1891 . 1 `uc 1 TMR1ON 1 0 :1:0 
+`uc 1 T1RD16 1 0 :1:1 
+`uc 1 nT1SYNC 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 T1CKPS0 1 0 :1:4 
+`uc 1 T1CKPS1 1 0 :1:5 
+]
+[s S1898 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 CKPS0 1 0 :1:4 
+`uc 1 CKPS1 1 0 :1:5 
+]
+[s S1902 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 RD161 1 0 :1:1 
+]
+[u S1905 . 1 `S1885 1 . 1 0 `S1891 1 . 1 0 `S1898 1 . 1 0 `S1902 1 . 1 0 ]
+[v _T1CONbits T1CONbits `VES1905  1 e 1 @526 ]
+"6883
+[v _T1GCON T1GCON `VEuc  1 e 1 @527 ]
+[s S1931 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 GVAL 1 0 :1:2 
+`uc 1 GGO_nDONE 1 0 :1:3 
+`uc 1 GSPM 1 0 :1:4 
+`uc 1 GTM 1 0 :1:5 
+`uc 1 GPOL 1 0 :1:6 
+`uc 1 GE 1 0 :1:7 
+]
+"6917
+[s S1939 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 T1GVAL 1 0 :1:2 
+`uc 1 T1GGO_nDONE 1 0 :1:3 
+`uc 1 T1GSPM 1 0 :1:4 
+`uc 1 T1GTM 1 0 :1:5 
+`uc 1 T1GPOL 1 0 :1:6 
+`uc 1 T1GE 1 0 :1:7 
+]
+[s S1947 . 1 `uc 1 . 1 0 :3:0 
+`uc 1 T1GGO 1 0 :1:3 
+]
+[u S1950 . 1 `S1931 1 . 1 0 `S1939 1 . 1 0 `S1947 1 . 1 0 ]
+[v _T1GCONbits T1GCONbits `VES1950  1 e 1 @527 ]
+"7079
+[v _T1GATE T1GATE `VEuc  1 e 1 @528 ]
+"7245
+[v _T1CLK T1CLK `VEuc  1 e 1 @529 ]
+[s S770 . 1 `uc 1 INTF 1 0 :1:0 
+`uc 1 . 1 0 :3:1 
+`uc 1 IOCIF 1 0 :1:4 
+`uc 1 TMR0IF 1 0 :1:5 
+]
+"21269
+[u S775 . 1 `S770 1 . 1 0 ]
+[v _PIR0bits PIR0bits `VES775  1 e 1 @1804 ]
+[s S412 . 1 `uc 1 SSP1IF 1 0 :1:0 
+`uc 1 BCL1IF 1 0 :1:1 
+`uc 1 SSP2IF 1 0 :1:2 
+`uc 1 BCL2IF 1 0 :1:3 
+`uc 1 TXIF 1 0 :1:4 
+`uc 1 RCIF 1 0 :1:5 
+]
+"21376
+[u S419 . 1 `S412 1 . 1 0 ]
+[v _PIR3bits PIR3bits `VES419  1 e 1 @1807 ]
+[s S705 . 1 `uc 1 TMR1IF 1 0 :1:0 
+`uc 1 TMR2IF 1 0 :1:1 
+`uc 1 TMR3IF 1 0 :1:2 
+`uc 1 TMR4IF 1 0 :1:3 
+`uc 1 TMR5IF 1 0 :1:4 
+`uc 1 TMR6IF 1 0 :1:5 
+]
+"21426
+[u S712 . 1 `S705 1 . 1 0 ]
+[v _PIR4bits PIR4bits `VES712  1 e 1 @1808 ]
+[s S1516 . 1 `uc 1 INTE 1 0 :1:0 
+`uc 1 . 1 0 :3:1 
+`uc 1 IOCIE 1 0 :1:4 
+`uc 1 TMR0IE 1 0 :1:5 
+]
+"21691
+[u S1521 . 1 `S1516 1 . 1 0 ]
+[v _PIE0bits PIE0bits `VES1521  1 e 1 @1814 ]
+[s S1574 . 1 `uc 1 TMR1IE 1 0 :1:0 
+`uc 1 TMR2IE 1 0 :1:1 
+`uc 1 TMR3IE 1 0 :1:2 
+`uc 1 TMR4IE 1 0 :1:3 
+`uc 1 TMR5IE 1 0 :1:4 
+`uc 1 TMR6IE 1 0 :1:5 
+]
+"21848
+[u S1581 . 1 `S1574 1 . 1 0 ]
+[v _PIE4bits PIE4bits `VES1581  1 e 1 @1818 ]
+"22100
+[v _PMD0 PMD0 `VEuc  1 e 1 @1942 ]
+"22157
+[v _PMD1 PMD1 `VEuc  1 e 1 @1943 ]
+"22228
+[v _PMD2 PMD2 `VEuc  1 e 1 @1944 ]
+"22273
+[v _PMD3 PMD3 `VEuc  1 e 1 @1945 ]
+"22329
+[v _PMD4 PMD4 `VEuc  1 e 1 @1946 ]
+"22380
+[v _PMD5 PMD5 `VEuc  1 e 1 @1947 ]
+"23101
+[v _NVMADRL NVMADRL `VEuc  1 e 1 @2074 ]
+"23163
+[v _NVMADRH NVMADRH `VEuc  1 e 1 @2075 ]
+"23219
+[v _NVMDATL NVMDATL `VEuc  1 e 1 @2076 ]
+[s S1678 . 1 `uc 1 RD 1 0 :1:0 
+`uc 1 WR 1 0 :1:1 
+`uc 1 WREN 1 0 :1:2 
+`uc 1 WRERR 1 0 :1:3 
+`uc 1 FREE 1 0 :1:4 
+`uc 1 LWLO 1 0 :1:5 
+`uc 1 NVMREGS 1 0 :1:6 
+]
+"23347
+[u S1686 . 1 `S1678 1 . 1 0 ]
+[v _NVMCON1bits NVMCON1bits `VES1686  1 e 1 @2078 ]
+"23387
+[v _NVMCON2 NVMCON2 `VEuc  1 e 1 @2079 ]
+"23451
+[v _OSCCON1 OSCCON1 `VEuc  1 e 1 @2189 ]
+"23591
+[v _OSCCON3 OSCCON3 `VEuc  1 e 1 @2191 ]
+"23688
+[v _OSCEN OSCEN `VEuc  1 e 1 @2193 ]
+"23739
+[v _OSCTUNE OSCTUNE `VEuc  1 e 1 @2194 ]
+"23797
+[v _OSCFRQ OSCFRQ `VEuc  1 e 1 @2195 ]
+"29910
+[v _INTPPS INTPPS `VEuc  1 e 1 @3728 ]
+"31516
+[v _SSP1CLKPPS SSP1CLKPPS `VEuc  1 e 1 @3781 ]
+"31568
+[v _SSP1DATPPS SSP1DATPPS `VEuc  1 e 1 @3782 ]
+"32882
+[v _RC3PPS RC3PPS `VEuc  1 e 1 @3875 ]
+"32932
+[v _RC4PPS RC4PPS `VEuc  1 e 1 @3876 ]
+"33682
+[v _ANSELA ANSELA `VEuc  1 e 1 @3896 ]
+"33744
+[v _WPUA WPUA `VEuc  1 e 1 @3897 ]
+"33806
+[v _ODCONA ODCONA `VEuc  1 e 1 @3898 ]
+"33868
+[v _SLRCONA SLRCONA `VEuc  1 e 1 @3899 ]
+"33930
+[v _INLVLA INLVLA `VEuc  1 e 1 @3900 ]
+"34302
+[v _ANSELB ANSELB `VEuc  1 e 1 @3907 ]
+"34364
+[v _WPUB WPUB `VEuc  1 e 1 @3908 ]
+"34426
+[v _ODCONB ODCONB `VEuc  1 e 1 @3909 ]
+"34488
+[v _SLRCONB SLRCONB `VEuc  1 e 1 @3910 ]
+"34550
+[v _INLVLB INLVLB `VEuc  1 e 1 @3911 ]
+"34922
+[v _ANSELC ANSELC `VEuc  1 e 1 @3918 ]
+"34984
+[v _WPUC WPUC `VEuc  1 e 1 @3919 ]
+"35046
+[v _ODCONC ODCONC `VEuc  1 e 1 @3920 ]
+"35108
+[v _SLRCONC SLRCONC `VEuc  1 e 1 @3921 ]
+"35170
+[v _INLVLC INLVLC `VEuc  1 e 1 @3922 ]
+"35542
+[v _ANSELD ANSELD `VEuc  1 e 1 @3929 ]
+"35604
+[v _WPUD WPUD `VEuc  1 e 1 @3930 ]
+"35666
+[v _ODCOND ODCOND `VEuc  1 e 1 @3931 ]
+"35728
+[v _SLRCOND SLRCOND `VEuc  1 e 1 @3932 ]
+"35790
+[v _INLVLD INLVLD `VEuc  1 e 1 @3933 ]
+"35976
+[v _ANSELE ANSELE `VEuc  1 e 1 @3940 ]
+"36008
+[v _WPUE WPUE `VEuc  1 e 1 @3941 ]
+"36046
+[v _ODCONE ODCONE `VEuc  1 e 1 @3942 ]
+"36078
+[v _SLRCONE SLRCONE `VEuc  1 e 1 @3943 ]
+"36110
+[v _INLVLE INLVLE `VEuc  1 e 1 @3944 ]
+"41287
+"41287
+[v _RA0 RA0 `VEb  1 e 0 @96 ]
+"10 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v _memory_initialized memory_initialized `a  1 s 1 memory_initialized ]
+[s S658 . 3 `uc 1 hour 1 0 `uc 1 minute 1 1 `uc 1 second 1 2 ]
+"54 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _current_time current_time `S658  1 e 3 0 ]
+"55
+[v _interrupt_occured interrupt_occured `a  1 e 1 0 ]
+"56
+[v _S1_press S1_press `a  1 e 1 0 ]
+[v _S2_press S2_press `a  1 e 1 0 ]
+[v _S1_pressed S1_pressed `a  1 e 1 0 ]
+[v _S2_pressed S2_pressed `a  1 e 1 0 ]
+"30 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\ext_int.c
+[v _INT_InterruptHandler INT_InterruptHandler `*.37(v  1 e 2 0 ]
+[s S1762 . 4 `uc 1 con1 1 0 `uc 1 stat 1 1 `uc 1 add 1 2 `uc 1 operation 1 3 ]
+"58 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\spi1.c
+[v _spi1_configuration spi1_configuration `DC[1]S1762  1 s 4 spi1_configuration ]
+"57 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\tmr1.c
+[v _timer1ReloadVal timer1ReloadVal `VEus  1 e 2 0 ]
+"58
+[v _TMR1_InterruptHandler TMR1_InterruptHandler `*.37(v  1 e 2 0 ]
+"182 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _main main `(v  1 e 1 0 ]
+{
+"248
+[v main@flag flag `E12694  1 a 1 25 ]
+[s S658 . 3 `uc 1 hour 1 0 `uc 1 minute 1 1 `uc 1 second 1 2 ]
+"184
+[s S987 . 5 `S658 1 timestamp 3 0 `c 1 temperature 1 3 `uc 1 luminosity 1 4 ]
+[s S991 . 32 `S658 1 current_time 3 0 `S658 1 alarm_time 3 3 `c 1 temperature 1 6 `uc 1 luminosity 1 7 `uc 1 temperature_threshold 1 8 `uc 1 luminosity_threshold 1 9 `uc 1 alarms_enabled 1 10 `uc 1 alarm_notifications 1 11 `S987 1 maximum_temperature 5 12 `S987 1 minimum_temperature 5 17 `S987 1 maximum_luminosity 5 22 `S987 1 minimum_luminosity 5 27 ]
+[v main@data data `S991  1 a 32 26 ]
+"228
+[v main@time_ms time_ms `i  1 a 2 22 ]
+"209
+[v main@m_flag m_flag `E12694  1 a 1 24 ]
+"273
+} 0
+"33 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v _write_parameter write_parameter `(E12237  1 e 1 0 ]
+{
+[v write_parameter@parameter parameter `E12223  1 p 1 wreg ]
+"55
+[v write_parameter@i_63 i `i  1 a 2 11 ]
+"43
+[v write_parameter@i i `i  1 a 2 9 ]
+"42
+[v write_parameter@checksum checksum `uc  1 a 1 8 ]
+"33
+[v write_parameter@parameter parameter `E12223  1 p 1 wreg ]
+[v write_parameter@buffer buffer `uc  1 p 1 4 ]
+"35
+[v write_parameter@parameter parameter `E12223  1 p 1 7 ]
+"61
+} 1
+"12
+[v _memory_init memory_init `(E12237  1 e 1 0 ]
+{
+"22
+[v memory_init@i i `i  1 a 2 10 ]
+"21
+[v memory_init@checksum checksum `uc  1 a 1 9 ]
+"31
+} 0
+"157 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _getData getData `(v  1 e 1 0 ]
+{
+"159
+[v getData@lum lum `i  1 a 2 18 ]
+"162
+[v getData@flag flag `E12694  1 a 1 21 ]
+"158
+[v getData@c c `uc  1 a 1 20 ]
+[s S658 . 3 `uc 1 hour 1 0 `uc 1 minute 1 1 `uc 1 second 1 2 ]
+"157
+[s S987 . 5 `S658 1 timestamp 3 0 `c 1 temperature 1 3 `uc 1 luminosity 1 4 ]
+[s S991 . 32 `S658 1 current_time 3 0 `S658 1 alarm_time 3 3 `c 1 temperature 1 6 `uc 1 luminosity 1 7 `uc 1 temperature_threshold 1 8 `uc 1 luminosity_threshold 1 9 `uc 1 alarms_enabled 1 10 `uc 1 alarm_notifications 1 11 `S987 1 maximum_temperature 5 12 `S987 1 minimum_temperature 5 17 `S987 1 maximum_luminosity 5 22 `S987 1 minimum_luminosity 5 27 ]
+[v getData@data data `*.39S991  1 p 2 16 ]
+"180
+} 0
+"63 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v _read_parameter read_parameter `(E12237  1 e 1 0 ]
+{
+[v read_parameter@parameter parameter `E12223  1 p 1 wreg ]
+"74
+[v read_parameter@i i `i  1 a 2 8 ]
+"73
+[v read_parameter@checksum checksum `uc  1 a 1 6 ]
+"63
+[v read_parameter@parameter parameter `E12223  1 p 1 wreg ]
+[v read_parameter@buffer buffer `*.39uc  1 p 2 2 ]
+"65
+[v read_parameter@parameter parameter `E12223  1 p 1 7 ]
+"85
+} 1
+"129 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _readTC74 readTC74 `(uc  1 e 1 0 ]
+{
+"130
+[v readTC74@value value `uc  1 a 1 3 ]
+"155
+} 0
+"43 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\I2C\i2c.c
+[v _ReadI2C ReadI2C `(uc  1 e 1 0 ]
+{
+"48
+} 0
+"87 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v _memory_reset memory_reset `(v  1 e 1 0 ]
+{
+"100
+[v memory_reset@i i `i  1 a 2 6 ]
+"99
+[v memory_reset@checksum checksum `uc  1 a 1 5 ]
+"104
+} 0
+"50 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\memory.c
+[v _DATAEE_WriteByte DATAEE_WriteByte `(v  1 e 1 0 ]
+{
+"51
+[v DATAEE_WriteByte@GIEBitValue GIEBitValue `uc  1 a 1 3 ]
+"50
+[v DATAEE_WriteByte@bAdd bAdd `us  1 p 2 0 ]
+[v DATAEE_WriteByte@bData bData `uc  1 p 1 2 ]
+"69
+} 0
+"71
+[v _DATAEE_ReadByte DATAEE_ReadByte `(uc  1 e 1 0 ]
+{
+[v DATAEE_ReadByte@bAdd bAdd `us  1 p 2 0 ]
+"80
+} 0
+"15 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\Umul16.c
+[v ___wmul __wmul `(ui  1 e 2 0 ]
+{
+"17
+[v ___wmul@product product `ui  1 a 2 7 ]
+"15
+[v ___wmul@multiplier multiplier `ui  1 p 2 3 ]
+[v ___wmul@multiplicand multiplicand `ui  1 p 2 5 ]
+"53
+} 0
+"5 c:\Program Files\Microchip\xc8\v3.10\pic\sources\c99\common\lwdiv.c
+[v ___lwdiv __lwdiv `(ui  1 e 2 0 ]
+{
+"10
+[v ___lwdiv@quotient quotient `ui  1 a 2 13 ]
+"11
+[v ___lwdiv@counter counter `uc  1 a 1 15 ]
+"5
+[v ___lwdiv@divisor divisor `ui  1 p 2 9 ]
+[v ___lwdiv@dividend dividend `ui  1 p 2 11 ]
+"30
+} 0
+"132 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\adcc.c
+[v _ADCC_GetSingleConversion ADCC_GetSingleConversion `(us  1 e 2 0 ]
+{
+[v ADCC_GetSingleConversion@channel channel `E12219  1 p 1 wreg ]
+[v ADCC_GetSingleConversion@channel channel `E12219  1 p 1 wreg ]
+"135
+[v ADCC_GetSingleConversion@channel channel `E12219  1 p 1 2 ]
+"157
+} 1
+"9 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\Time\Time.c
+[v _Time_reset Time_reset `(i  1 e 2 0 ]
+{
+[s S658 . 3 `uc 1 hour 1 0 `uc 1 minute 1 1 `uc 1 second 1 2 ]
+[v Time_reset@time time `*.39S658  1 p 2 0 ]
+"17
+} 0
+"105 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\tmr1.c
+[v _TMR1_StopTimer TMR1_StopTimer `(v  1 e 1 0 ]
+{
+"109
+} 0
+"99
+[v _TMR1_StartTimer TMR1_StartTimer `(v  1 e 1 0 ]
+{
+"103
+} 0
+"149
+[v _TMR1_Reload TMR1_Reload `(v  1 e 1 0 ]
+{
+"152
+} 0
+"127
+[v _TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
+{
+[v TMR1_WriteTimer@timerVal timerVal `us  1 p 2 0 ]
+"147
+} 0
+"50 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\mcc.c
+[v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
+{
+"60
+} 0
+"64 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\tmr1.c
+[v _TMR1_Initialize TMR1_Initialize `(v  1 e 1 0 ]
+{
+"97
+} 0
+"178
+[v _TMR1_SetInterruptHandler TMR1_SetInterruptHandler `(v  1 e 1 0 ]
+{
+[v TMR1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 0 ]
+"180
+} 0
+"62 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\spi1.c
+[v _SPI1_Initialize SPI1_Initialize `(v  1 e 1 0 ]
+{
+"75
+} 0
+"76 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\mcc.c
+[v _PMD_Initialize PMD_Initialize `(v  1 e 1 0 ]
+{
+"90
+} 0
+"55 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\pin_manager.c
+[v _PIN_MANAGER_Initialize PIN_MANAGER_Initialize `(v  1 e 1 0 ]
+{
+"134
+} 0
+"62 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\mcc.c
+[v _OSCILLATOR_Initialize OSCILLATOR_Initialize `(v  1 e 1 0 ]
+{
+"74
+} 0
+"59 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\ext_int.c
+[v _EXT_INT_Initialize EXT_INT_Initialize `(v  1 e 1 0 ]
+{
+"70
+} 0
+"50
+[v _INT_SetInterruptHandler INT_SetInterruptHandler `(v  1 e 1 0 ]
+{
+[v INT_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 0 ]
+"52
+} 0
+"63 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\adcc.c
+[v _ADCC_Initialize ADCC_Initialize `(v  1 e 1 0 ]
+{
+"106
+} 0
+"26 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\I2C\i2c.c
+[v _OpenI2C OpenI2C `(v  1 e 1 0 ]
+{
+"35
+} 0
+"80 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\LCD\lcd.c
+[v _LCDinit LCDinit `(v  1 e 1 0 ]
+{
+"101
+} 0
+"57
+[v _LCDsend2x4 LCDsend2x4 `(v  1 e 1 0 ]
+{
+[v LCDsend2x4@c c `uc  1 p 1 wreg ]
+"60
+[v LCDsend2x4@lc lc `uc  1 a 1 6 ]
+"59
+[v LCDsend2x4@hc hc `uc  1 a 1 5 ]
+"57
+[v LCDsend2x4@c c `uc  1 p 1 wreg ]
+[v LCDsend2x4@mode mode `uc  1 p 1 2 ]
+"62
+[v LCDsend2x4@c c `uc  1 p 1 4 ]
+"78
+} 1
+"17
+[v _LCDsend LCDsend `(v  1 e 1 0 ]
+{
+[v LCDsend@c c `uc  1 p 1 wreg ]
+[v LCDsend@c c `uc  1 p 1 wreg ]
+[v LCDsend@c c `uc  1 p 1 3 ]
+"25
+} 1
+"57 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\I2C\i2c.c
+[v _WriteI2C WriteI2C `(c  1 e 1 0 ]
+{
+[v WriteI2C@data_out data_out `uc  1 p 1 wreg ]
+[v WriteI2C@data_out data_out `uc  1 p 1 wreg ]
+[v WriteI2C@data_out data_out `uc  1 p 1 1 ]
+"80
+} 1
+"53 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\interrupt_manager.c
+[v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `II(v  1 e 1 0 ]
+{
+"87
+} 0
+"164 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\tmr1.c
+[v _TMR1_ISR TMR1_ISR `(v  1 e 1 0 ]
+{
+"175
+} 0
+"127
+[v i1_TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
+{
+[v i1TMR1_WriteTimer@timerVal timerVal `us  1 p 2 0 ]
+"147
+} 0
+"182
+[v _TMR1_DefaultInterruptHandler TMR1_DefaultInterruptHandler `(v  1 e 1 0 ]
+{
+"185
+} 0
+"111 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _Timer1_counter Timer1_counter `(v  1 e 1 0 ]
+{
+"116
+[v Timer1_counter@flag flag `E12694  1 a 1 13 ]
+"127
+} 0
+"33 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\EEPROM\config_storage.c
+[v i1_write_parameter write_parameter `(E12237  1 e 1 0 ]
+{
+[v i1write_parameter@parameter parameter `E12223  1 p 1 wreg ]
+"55
+[v i1write_parameter@i_63 i `i  1 a 2 11 ]
+"43
+[v i1write_parameter@i i `i  1 a 2 9 ]
+"42
+[v i1write_parameter@checksum checksum `uc  1 a 1 8 ]
+"33
+[v i1write_parameter@parameter parameter `E12223  1 p 1 wreg ]
+[v i1write_parameter@buffer buffer `uc  1 p 1 4 ]
+"35
+[v i1write_parameter@parameter parameter `E12223  1 p 1 7 ]
+"61
+} 1
+"87
+[v i1_memory_reset memory_reset `(v  1 e 1 0 ]
+{
+"100
+[v i1memory_reset@i i `i  1 a 2 6 ]
+"99
+[v i1memory_reset@checksum checksum `uc  1 a 1 5 ]
+"104
+} 0
+"50 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\memory.c
+[v i1_DATAEE_WriteByte DATAEE_WriteByte `(v  1 e 1 0 ]
+{
+"51
+[v i1DATAEE_WriteByte@GIEBitValue GIEBitValue `uc  1 a 1 3 ]
+"50
+[v i1DATAEE_WriteByte@bAdd bAdd `us  1 p 2 0 ]
+[v i1DATAEE_WriteByte@bData bData `uc  1 p 1 2 ]
+"69
+} 0
+"71
+[v i1_DATAEE_ReadByte DATAEE_ReadByte `(uc  1 e 1 0 ]
+{
+[v i1DATAEE_ReadByte@bAdd bAdd `us  1 p 2 0 ]
+"80
+} 0
+"19 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\Time\Time.c
+[v _Time_increment Time_increment `(i  1 e 2 0 ]
+{
+[s S658 . 3 `uc 1 hour 1 0 `uc 1 minute 1 1 `uc 1 second 1 2 ]
+[v Time_increment@time time `*.39S658  1 p 2 0 ]
+"40
+} 0
+"136 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\pin_manager.c
+[v _PIN_MANAGER_IOC PIN_MANAGER_IOC `(v  1 e 1 0 ]
+{
+"138
+} 0
+"32 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\ext_int.c
+[v _INT_ISR INT_ISR `(v  1 e 1 0 ]
+{
+"38
+} 0
+"41
+[v _INT_CallBack INT_CallBack `(v  1 e 1 0 ]
+{
+"48
+} 0
+"86 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\main.c
+[v _Button_press Button_press `(v  1 e 1 0 ]
+{
+"106
+} 0
+"54 C:\Users\mamot\Documents\GitHub\STR_PROJECT1\mcc_generated_files\ext_int.c
+[v _INT_DefaultInterruptHandler INT_DefaultInterruptHandler `(v  1 e 1 0 ]
+{
+"57
+} 0

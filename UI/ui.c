@@ -1,17 +1,32 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "../mcc_generated_files/mcc.h"
 #include "../LCD/lcd.h"
 #include "ui.h"
 
-#define UI_REFRESH_MS 250u
-#define UI_SCREEN_MS 1000u
-#define UI_THRESHOLDS_MS 2000u
+#define UI_TIMER5_TICKS_PER_SECOND 31000u
 
 UI_State state = UI_NORMAL;
-static uint32_t state_started_ms;
-static uint32_t last_draw_ms;
 static uint8_t redraw = 1u;
+volatile uint8_t ui_timeout_pending;
 
+static void ui_timed_screen_timeout(void)
+{
+    PIR4bits.TMR5IF = 0;
+    TMR5_StopTimer();
+    ui_timeout_pending = 1u;
+}
+
+void ui_init(void)
+{
+    state = UI_NORMAL;
+    redraw = 1u;
+    ui_timeout_pending = 0u;
+
+    TMR5_StopTimer();
+    PIR4bits.TMR5IF = 0;
+    TMR5_SetInterruptHandler(ui_timed_screen_timeout);
+}
 
 static void ui_write_line(uint8_t row, const char *text)
 {
@@ -82,11 +97,26 @@ static void ui_hide_cursor(void)
     LCDcmd(0x0c);
 }
 
-static void ui_enter(UI_State next, uint32_t now_ms)
+static void ui_enter(UI_State next)
 {
+    uint16_t preload;
+
     state = next;
-    state_started_ms = now_ms;
     redraw = 1u;
+    ui_timeout_pending = 0u;
+
+    TMR5_StopTimer();
+    PIR4bits.TMR5IF = 0;
+
+    if (next == UI_SHOW_THRESHOLDS) {
+        preload = (uint16_t)(0u - (uint16_t)(UI_TIMER5_TICKS_PER_SECOND * 2u));
+        TMR5_WriteTimer(preload);
+        TMR5_StartTimer();
+    } else if (next == UI_SHOW_RECORDS_TEMP || next == UI_SHOW_RECORDS_LUM) {
+        preload = (uint16_t)(0u - (uint16_t)(UI_TIMER5_TICKS_PER_SECOND * 1u));
+        TMR5_WriteTimer(preload);
+        TMR5_StartTimer();
+    }
 }
 
 static void ui_draw_normal(const ui_display_data_t *data)
@@ -261,25 +291,26 @@ static void ui_increment_time_field(time_t *time, uint8_t field)
         time->second = (uint8_t)((time->second + 1u) % 60u);
 }
 
-static void ui_update_timed_screen(UI_State next, uint32_t now_ms)
+static void ui_update_timed_screen(UI_State next)
 {
-    if ((uint32_t)(now_ms - state_started_ms) >= UI_SCREEN_MS)
-        ui_enter(next, now_ms);
+    if (ui_timeout_pending) {
+        ui_timeout_pending = 0u;
+        ui_enter(next);
+    }
 }
 
 static void ui_update_threshold(uint8_t *threshold, uint8_t maximum,
                                 UI_State edit_state, UI_State next_state,
-                                uint8_t s1_pressed, uint8_t s2_pressed,
-                                uint32_t now_ms)
+                                uint8_t s1_pressed, uint8_t s2_pressed)
 {
     if (s1_pressed) {
-        ui_enter(next_state, now_ms);
+        ui_enter(next_state);
     } else if (s2_pressed) {
         if (state == edit_state) {
             *threshold = (uint8_t)((*threshold + 1u) % (maximum + 1u));
             redraw = 1u;
         } else {
-            ui_enter(edit_state, now_ms);
+            ui_enter(edit_state);
         }
     }
 }
@@ -302,7 +333,7 @@ static void ui_reset_records(ui_display_data_t *data)
 }
 
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
-               uint8_t s2_pressed, uint32_t now_ms)
+               uint8_t s2_pressed)
 {
     if (data == NULL)
         return;
@@ -311,30 +342,30 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
         case UI_NORMAL:
             if (s1_pressed) {
                 data->alarm_notifications = 0u;
-                ui_enter(UI_SHOW_THRESHOLDS, now_ms);
+                ui_enter(UI_SHOW_THRESHOLDS);
             } else if (s2_pressed) {
-                ui_enter(UI_SHOW_RECORDS_TEMP, now_ms);
+                ui_enter(UI_SHOW_RECORDS_TEMP);
             }
             break;
 
         case UI_SHOW_THRESHOLDS:
             if (s1_pressed)
-                ui_enter(UI_CONFIG_CLKH, now_ms);
-            else if ((uint32_t)(now_ms - state_started_ms) >= UI_THRESHOLDS_MS)
-                ui_enter(UI_NORMAL, now_ms);
+                ui_enter(UI_CONFIG_CLKH);
+            else
+                ui_update_timed_screen(UI_NORMAL);
             break;
 
         case UI_SHOW_RECORDS_TEMP:
         case UI_SHOW_RECORDS_LUM:
             ui_update_timed_screen(
-                state == UI_SHOW_RECORDS_TEMP ? UI_SHOW_RECORDS_LUM : UI_NORMAL, now_ms);
+                state == UI_SHOW_RECORDS_TEMP ? UI_SHOW_RECORDS_LUM : UI_NORMAL);
             break;
 
         case UI_CONFIG_CLKH:
         case UI_CONFIG_CLKM:
         case UI_CONFIG_CLKS:
             if (s1_pressed) {
-                ui_enter(state + 1, now_ms);
+                ui_enter(state + 1);
             } else if (s2_pressed) {
                 ui_increment_time_field(&data->current_time,
                                         (uint8_t)(state - UI_CONFIG_CLKH));
@@ -344,9 +375,9 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
 
         case UI_CONFIG_C:
             if (s1_pressed)
-                ui_enter(UI_CONFIG_T, now_ms);
+                ui_enter(UI_CONFIG_T);
             else if (s2_pressed) {
-                ui_enter(UI_CONFIG_C_ALAH, now_ms);
+                ui_enter(UI_CONFIG_C_ALAH);
             }
             break;
 
@@ -354,7 +385,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
         case UI_CONFIG_C_ALAM:
         case UI_CONFIG_C_ALAS:
             if (s1_pressed) {
-                ui_enter(state + 1, now_ms);
+                ui_enter(state + 1);
             } else if (s2_pressed) {
                 ui_increment_time_field(&data->alarm_time, 
                                         (uint8_t)(state - UI_CONFIG_C_ALAH));
@@ -366,19 +397,19 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
         case UI_CONFIG_T_ALAT:
             ui_update_threshold(&data->temperature_threshold, 50u,
                                 UI_CONFIG_T_ALAT, UI_CONFIG_L,
-                                s1_pressed, s2_pressed, now_ms);
+                                s1_pressed, s2_pressed);
             break;
 
         case UI_CONFIG_L:
         case UI_CONFIG_L_ALAL:
             ui_update_threshold(&data->luminosity_threshold, 7u,
                                 UI_CONFIG_L_ALAL, UI_CONFIG_A_ALAF,
-                                s1_pressed, s2_pressed, now_ms);
+                                s1_pressed, s2_pressed);
             break;
 
         case UI_CONFIG_A_ALAF:
             if (s1_pressed)
-                ui_enter(UI_RECORDS_RESET, now_ms);
+                ui_enter(UI_RECORDS_RESET);
             else if (s2_pressed) {
                 data->alarms_enabled = !data->alarms_enabled;
                 redraw = 1u;
@@ -387,7 +418,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
 
         case UI_RECORDS_RESET:
             if (s1_pressed)
-                ui_enter(UI_NORMAL, now_ms);
+                ui_enter(UI_NORMAL);
             else if (s2_pressed) {
                 ui_reset_records(data);
                 redraw = 1u;
@@ -395,15 +426,12 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
             break;
 
         default:
-            ui_enter(UI_NORMAL, now_ms);
+            ui_enter(UI_NORMAL);
             break;
     }
 
-    if (redraw ||
-        ((state == UI_NORMAL || state == UI_SHOW_THRESHOLDS) &&
-         (uint32_t)(now_ms - last_draw_ms) >= UI_REFRESH_MS)) {
+    if (redraw || state == UI_NORMAL) {
         ui_draw(data);
-        last_draw_ms = now_ms;
         redraw = 0u;
     }
 }

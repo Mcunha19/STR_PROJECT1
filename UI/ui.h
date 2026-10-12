@@ -51,9 +51,11 @@ typedef struct {
     ui_record_t minimum_luminosity;
 } ui_display_data_t;
 
-void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
-               uint8_t s2_pressed, uint32_t now_ms);
+extern volatile uint8_t ui_timeout_pending;
 
+void ui_init(void);
+void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
+               uint8_t s2_pressed);
 
 
 #endif
