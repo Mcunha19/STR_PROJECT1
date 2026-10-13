@@ -128,8 +128,6 @@ void Button_press(void) {
     
     if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
     else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
-    
-    EXT_INT_InterruptFlagClear();
 
     // Stop Timer 3
     TMR3_StopTimer();
@@ -137,6 +135,10 @@ void Button_press(void) {
     TMR3_Reload();
     // Start Timer 3
     TMR3_StartTimer();
+    
+    // Clear interrupt flag
+    PIR0bits.IOCIF = 0;
+    
 }
 
 /**
@@ -247,10 +249,10 @@ void getData(ui_display_data_t *data){
         flag = read_parameter(ALAT, &data->temperature_threshold);
         flag = read_parameter(ALAL, &data->luminosity_threshold);
         flag = read_parameter(ALAF, &data->alarms_enabled);
-//        if (flag == MEM_CORRUPTED) {
-//            memory_reset();
-//        }
-    } while ( 0/*flag == MEM_CORRUPTED*/);
+        if (flag == MEM_CORRUPTED) {
+            memory_reset();
+        }
+    } while (flag == MEM_CORRUPTED);
     
     data->temperature = temperature;
     data->luminosity = (uint8_t)luminosity;
@@ -313,7 +315,8 @@ void main(void) {
     TMR3_StopTimer();
 
     // Setting button press interrupt handler
-    INT_SetInterruptHandler(Button_press);
+    IOCBF4_SetInterruptHandler(Button_press);
+    IOCCF5_SetInterruptHandler(Button_press);
     
     // First reading
     temperature = (uint8_t) readTC74();
