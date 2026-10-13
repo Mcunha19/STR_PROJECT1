@@ -157,18 +157,78 @@ void Timer1_counter(void) {
     }
     
     // Check thresholds
-    // TODO
-    ///////////////////
+    uint8_t alarm_flag,
+            alarm_h,
+            alarm_m,
+            alarm_s,
+            alarm_t,
+            alarm_l;
+    flag = read_parameter(ALAF, &alarm_flag);
+    flag = read_parameter(ALAH, &alarm_h);
+    flag = read_parameter(ALAM, &alarm_m);
+    flag = read_parameter(ALAS, &alarm_s);
+    if (flag == MEM_CORRUPTED) {
+        memory_reset();
+    } else if (alarm_flag) {
+        if (alarm_h == current_time.hour &&
+            alarm_m == current_time.minute &&
+            alarm_s == current_time.second) {
+            
+            alarm_notification_mask |= UI_ALARM_CLOCK;
+            
+            // Start buzzer
+            // TODO
+            ///////////////
+        }
+    }
     
     // Read sensors
     if (!(read_sensors++ % PMON_DEFAULT)) {
         temperature = (uint8_t) readTC74();
         luminosity = ADCC_GetSingleConversion(RA0)*7/1023;
         
-        // Check thresholds
-        // TODO
-        ///////////////////
+        // Update maximum and minimum values
+        if (temperature > maximum_temperature.temperature) {
+            maximum_temperature.temperature = temperature;
+            maximum_temperature.luminosity = luminosity;
+            maximum_temperature.timestamp = current_time;
+        } else if (temperature < minimum_temperature.temperature) {
+            minimum_temperature.temperature = temperature;
+            minimum_temperature.luminosity = luminosity;
+            minimum_temperature.timestamp = current_time;
+        }
         
+        if (luminosity > maximum_luminosity.luminosity) {
+            maximum_luminosity.temperature = temperature;
+            maximum_luminosity.luminosity = luminosity;
+            maximum_luminosity.timestamp = current_time;
+        } else if (luminosity < minimum_luminosity.luminosity) {
+            minimum_luminosity.temperature = temperature;
+            minimum_luminosity.luminosity = luminosity;
+            minimum_luminosity.timestamp = current_time;
+        }
+        
+        // Check thresholds
+        flag = read_parameter(ALAT, &alarm_t);
+        flag = read_parameter(ALAL, &alarm_l);
+        if (flag == MEM_CORRUPTED) {
+            memory_reset();
+        } else if (alarm_flag) {
+            if (alarm_t <= temperature) {
+                alarm_notification_mask |= UI_ALARM_TEMP;
+
+                // Start buzzer
+                // TODO
+                ///////////////
+            }
+            if (alarm_l >= luminosity) {
+                alarm_notification_mask |= UI_ALARM_LUM;
+
+                // Start buzzer
+                // TODO
+                ///////////////
+            }
+        }
         read_sensors = 1;
     }
     
