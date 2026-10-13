@@ -114,6 +114,8 @@ void Button_debounce(void) {
         S2_pressed = true;
     }
     
+    interrupt_occured = true;
+    
     // Reset button press flags
     S1_press = 0;
     S2_press = 0;
@@ -127,12 +129,8 @@ void Button_press(void) {
     if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
     else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
     
-    interrupt_occured = true;
-    
     EXT_INT_InterruptFlagClear();
 
-    // Setting Timer 3 interrupt handler
-    TMR3_SetInterruptHandler(Button_debounce);
     // Stop Timer 3
     TMR3_StopTimer();
     // Reload Timer value
@@ -249,10 +247,10 @@ void getData(ui_display_data_t *data){
         flag = read_parameter(ALAT, &data->temperature_threshold);
         flag = read_parameter(ALAL, &data->luminosity_threshold);
         flag = read_parameter(ALAF, &data->alarms_enabled);
-        if (flag == MEM_CORRUPTED) {
-            memory_reset();
-        }
-    } while (flag == MEM_CORRUPTED);
+//        if (flag == MEM_CORRUPTED) {
+//            memory_reset();
+//        }
+    } while ( 0/*flag == MEM_CORRUPTED*/);
     
     data->temperature = temperature;
     data->luminosity = (uint8_t)luminosity;
@@ -308,6 +306,11 @@ void main(void) {
     Time_reset(&current_time);
     // Start Timer 1
     TMR1_StartTimer();
+    
+    // Setting Timer 3 interrupt handler
+    TMR3_SetInterruptHandler(Button_debounce);
+    // Stop Timer 3
+    TMR3_StopTimer();
 
     // Setting button press interrupt handler
     INT_SetInterruptHandler(Button_press);
