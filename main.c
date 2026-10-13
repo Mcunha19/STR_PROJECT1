@@ -51,14 +51,53 @@
 #include "stdio.h"
 #include "stdbool.h"
 
+/**************** Global Variables ********************/
 time_t current_time;
-bool interrupt_occured;
-bool S1_press, S2_press, S1_pressed, S2_pressed;
+uint8_t temperature;
+int luminosity;
+ui_record_t maximum_temperature;
+ui_record_t minimum_temperature;
+ui_record_t maximum_luminosity;
+ui_record_t minimum_luminosity;
+
+uint8_t alarm_notification_mask, read_sensors = 1;
+
+volatile bool interrupt_occured;
+volatile bool S1_press, S2_press, S1_pressed, S2_pressed;
+/******************************************************/
  
 uint8_t getPOTvalue(){
     int signal = ADCC_GetSingleConversion(RA0)*7/1023;
     uint8_t value = (uint8_t) signal;
     return value;
+}
+
+unsigned char readTC74 (void) {
+	unsigned char value;
+    do {
+        IdleI2C();
+        StartI2C(); IdleI2C();
+
+        WriteI2C(0x9a | 0x00); IdleI2C();
+        WriteI2C(0x01); IdleI2C();
+        RestartI2C(); IdleI2C();
+        WriteI2C(0x9a | 0x01); IdleI2C();
+        value = ReadI2C(); IdleI2C();
+        NotAckI2C(); IdleI2C();
+        StopI2C();
+    } while (!(value & 0x40));
+
+	IdleI2C();
+	StartI2C(); IdleI2C();
+	WriteI2C(0x9a | 0x00); IdleI2C();
+	WriteI2C(0x00); IdleI2C();
+	RestartI2C(); IdleI2C();
+	WriteI2C(0x9a | 0x01); IdleI2C();
+	value = ReadI2C(); IdleI2C();
+	NotAckI2C(); IdleI2C();
+	StopI2C();
+
+	return value;
 }
 
 void Button_debounce(void) {
@@ -84,7 +123,6 @@ void Button_debounce(void) {
  * Button press ISR
  */
 void Button_press(void) {
-    // Simple debouncing
     
     if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
     else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
@@ -118,43 +156,29 @@ void Timer1_counter(void) {
         memory_reset();
     }
     
+    // Check thresholds
+    // TODO
+    ///////////////////
+    
+    // Read sensors
+    if (!(read_sensors++ % PMON_DEFAULT)) {
+        temperature = (uint8_t) readTC74();
+        luminosity = ADCC_GetSingleConversion(RA0)*7/1023;
+        
+        // Check thresholds
+        // TODO
+        ///////////////////
+        
+        read_sensors = 1;
+    }
+    
     interrupt_occured = true;
     
     // Clear interrupt flag
     PIR4bits.TMR1IF = 0;
 }
 
-unsigned char readTC74 (void) {
-	unsigned char value;
-    do {
-        IdleI2C();
-        StartI2C(); IdleI2C();
-
-        WriteI2C(0x9a | 0x00); IdleI2C();
-        WriteI2C(0x01); IdleI2C();
-        RestartI2C(); IdleI2C();
-        WriteI2C(0x9a | 0x01); IdleI2C();
-        value = ReadI2C(); IdleI2C();
-        NotAckI2C(); IdleI2C();
-        StopI2C();
-    } while (!(value & 0x40));
-
-	IdleI2C();
-	StartI2C(); IdleI2C();
-	WriteI2C(0x9a | 0x00); IdleI2C();
-	WriteI2C(0x00); IdleI2C();
-	RestartI2C(); IdleI2C();
-	WriteI2C(0x9a | 0x01); IdleI2C();
-	value = ReadI2C(); IdleI2C();
-	NotAckI2C(); IdleI2C();
-	StopI2C();
-
-	return value;
-}
-
 void getData(ui_display_data_t *data){
-    uint8_t c = (uint8_t) readTC74();
-    int lum = ADCC_GetSingleConversion(RA0)*7/1023;
     
     // Fetch memory stored data
     memory_flag_t flag;
@@ -170,11 +194,14 @@ void getData(ui_display_data_t *data){
         }
     } while (flag == MEM_CORRUPTED);
     
-    data->temperature = c;
-    data->luminosity = (uint8_t) lum;
-    data->current_time.second = current_time.second;
-    data->current_time.hour = current_time.hour;
-    data->current_time.minute = current_time.minute;
+    data->temperature = temperature;
+    data->luminosity = (uint8_t)luminosity;
+    data->current_time = current_time;
+    data->alarm_notifications = alarm_notification_mask;
+    data->maximum_temperature = maximum_temperature;
+    data->minimum_temperature = minimum_temperature;
+    data->maximum_luminosity = maximum_luminosity;
+    data->minimum_luminosity = minimum_luminosity;
 }
 
 void main(void) {    
@@ -224,6 +251,23 @@ void main(void) {
 
     // Setting button press interrupt handler
     INT_SetInterruptHandler(Button_press);
+    
+    // First reading
+    temperature = (uint8_t) readTC74();
+    luminosity = ADCC_GetSingleConversion(RA0)*7/1023;
+    maximum_temperature.temperature = temperature;
+    maximum_temperature.luminosity = luminosity;
+    maximum_temperature.timestamp = current_time;
+    minimum_temperature.temperature = temperature;
+    minimum_temperature.luminosity = luminosity;
+    minimum_temperature.timestamp = current_time;
+    maximum_luminosity.temperature = temperature;
+    maximum_luminosity.luminosity = luminosity;
+    maximum_luminosity.timestamp = current_time;
+    minimum_luminosity.temperature = temperature;
+    minimum_luminosity.luminosity = luminosity;
+    minimum_luminosity.timestamp = current_time;
+    
 
     while (1) {
         
