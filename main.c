@@ -100,6 +100,7 @@ unsigned char readTC74 (void) {
 	return value;
 }
 
+/*
 void Button_debounce(void) {
     // Clear interrupt flag
     PIR4bits.TMR3IF = 0;
@@ -118,10 +119,11 @@ void Button_debounce(void) {
     S1_press = 0;
     S2_press = 0;
 }
-
+*/
 /**
  * Button press ISR
  */
+/*
 void Button_press(void) {
     
     if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
@@ -139,7 +141,7 @@ void Button_press(void) {
     TMR3_Reload();
     // Start Timer 3
     TMR3_StartTimer();
-}
+}*/
 
 /**
  * Timer 1 ISR
@@ -149,6 +151,8 @@ void Timer1_counter(void) {
     // Increment time variable
     Time_increment(&current_time);
     IO_RA7_D5_Toggle();
+    
+    /*
     memory_flag_t flag;
     flag = write_parameter(CLKH, current_time.hour);
     flag = write_parameter(CLKM, current_time.minute);
@@ -180,7 +184,7 @@ void Timer1_counter(void) {
             // TODO
             ///////////////
         }
-    }
+    }*/
     
     // Read sensors
     if (!(read_sensors++ % PMON_DEFAULT)) {
@@ -209,6 +213,8 @@ void Timer1_counter(void) {
         }
         
         // Check thresholds
+        /*
+        
         flag = read_parameter(ALAT, &alarm_t);
         flag = read_parameter(ALAL, &alarm_l);
         if (flag == MEM_CORRUPTED) {
@@ -229,6 +235,7 @@ void Timer1_counter(void) {
                 ///////////////
             }
         }
+        */
         read_sensors = 1;
     }
     
@@ -238,9 +245,20 @@ void Timer1_counter(void) {
     PIR4bits.TMR1IF = 0;
 }
 
+void buttonS1(void){
+    S1_pressed = true;
+    interrupt_occured = true;
+}
+
+void buttonS2(void){
+    S2_pressed = true;
+    interrupt_occured = true;
+}
+
 void getData(ui_display_data_t *data){
     
     // Fetch memory stored data
+    /*
     memory_flag_t flag;
     do {
         flag = read_parameter(ALAH, &data->alarm_time.hour);
@@ -252,7 +270,7 @@ void getData(ui_display_data_t *data){
         if (flag == MEM_CORRUPTED) {
             memory_reset();
         }
-    } while (flag == MEM_CORRUPTED);
+    } while (flag == MEM_CORRUPTED);*/
     
     data->temperature = temperature;
     data->luminosity = (uint8_t)luminosity;
@@ -293,10 +311,11 @@ void main(void) {
     ui_init();
     
     // Initialize memory
+    /*
     memory_flag_t m_flag = memory_init();
     if (m_flag == MEM_CORRUPTED) {
         memory_reset();
-    }
+    }*/
     
     // Setting Timer 1 interrupt handler
     TMR1_SetInterruptHandler(Timer1_counter);
@@ -310,7 +329,9 @@ void main(void) {
     TMR1_StartTimer();
 
     // Setting button press interrupt handler
-    INT_SetInterruptHandler(Button_press);
+    // INT_SetInterruptHandler(Button_press);
+    IOCBF4_SetInterruptHandler(buttonS1);
+    IOCCF5_SetInterruptHandler(buttonS2);
     
     // First reading
     temperature = (uint8_t) readTC74();
@@ -346,6 +367,7 @@ void main(void) {
             S1_pressed = false;
             S2_pressed = false;
             
+            /*
             // Update memory
             memory_flag_t flag;
             flag = write_parameter(ALAH, data.alarm_time.hour);
@@ -356,7 +378,7 @@ void main(void) {
             flag = write_parameter(ALAF, data.alarms_enabled);
             if (flag == MEM_CORRUPTED) {
                 memory_reset();
-            }
+            }*/
         }
         
 //        S1_pressed = 0;
