@@ -114,6 +114,8 @@ void Button_debounce(void) {
         S2_pressed = true;
     }
     
+    interrupt_occured = true;
+    
     // Reset button press flags
     S1_press = 0;
     S2_press = 0;
@@ -126,19 +128,17 @@ void Button_press(void) {
     
     if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
     else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
-    
-    interrupt_occured = true;
-    
-    EXT_INT_InterruptFlagClear();
 
-    // Setting Timer 3 interrupt handler
-    TMR3_SetInterruptHandler(Button_debounce);
     // Stop Timer 3
     TMR3_StopTimer();
     // Reload Timer value
     TMR3_Reload();
     // Start Timer 3
     TMR3_StartTimer();
+    
+    // Clear interrupt flag
+    PIR0bits.IOCIF = 0;
+    
 }
 
 /**
@@ -308,9 +308,15 @@ void main(void) {
     Time_reset(&current_time);
     // Start Timer 1
     TMR1_StartTimer();
+    
+    // Setting Timer 3 interrupt handler
+    TMR3_SetInterruptHandler(Button_debounce);
+    // Stop Timer 3
+    TMR3_StopTimer();
 
     // Setting button press interrupt handler
-    INT_SetInterruptHandler(Button_press);
+    IOCBF4_SetInterruptHandler(Button_press);
+    IOCCF5_SetInterruptHandler(Button_press);
     
     // First reading
     temperature = (uint8_t) readTC74();

@@ -19,10 +19,10 @@ memory_flag_t memory_init(void) {
     } else {
         // Validate checksum
         uint8_t checksum = 0;
-        for (int i=1; i<=8; i++) {
+        for (int i=1; i<=10; i++) {
             checksum += DATAEE_ReadByte((uint16_t)i);
         }
-        if (checksum != DATAEE_ReadByte(0x09)) {
+        if (checksum != DATAEE_ReadByte(0x0B)) {
             // Data is corrupted
             return MEM_CORRUPTED;
         }
@@ -40,10 +40,10 @@ memory_flag_t write_parameter(parameter_t parameter, uint8_t buffer) {
     
     // Validate checksum
     uint8_t checksum = 0;
-    for (int i=1; i<=8; i++) {
+    for (int i=1; i<=10; i++) {
         checksum += DATAEE_ReadByte((uint16_t)i);
     }
-    if (checksum != DATAEE_ReadByte(0x09)) {
+    if (checksum != DATAEE_ReadByte(0x0B)) {
         // Data is corrupted
         return MEM_CORRUPTED;
     }
@@ -52,10 +52,10 @@ memory_flag_t write_parameter(parameter_t parameter, uint8_t buffer) {
     
     // Re-compute checksum
     checksum = 0;
-    for (int i=1; i<=8; i++) {
+    for (int i=1; i<=10; i++) {
         checksum += DATAEE_ReadByte((uint16_t)i);
     }
-    DATAEE_WriteByte(0x09, checksum);
+    DATAEE_WriteByte(0x0B, checksum);
     
     return MEM_OK;
 }
@@ -71,10 +71,10 @@ memory_flag_t read_parameter(parameter_t parameter, uint8_t* buffer) {
     
     // Validate checksum
     uint8_t checksum = 0;
-    for (int i=1; i<=8; i++) {
+    for (int i=1; i<=10; i++) {
         checksum += DATAEE_ReadByte((uint16_t)i);
     }
-    if (checksum != DATAEE_ReadByte(0x09)) {
+    if (checksum != DATAEE_ReadByte(0x0B)) {
         // Data is corrupted
         return MEM_CORRUPTED;
     }
@@ -97,8 +97,8 @@ void memory_reset(void) {
     DATAEE_WriteByte((uint16_t)CLKH, CLKH_DEFAULT);
     DATAEE_WriteByte((uint16_t)CLKM, CLKM_DEFAULT);
     uint8_t checksum = 0;
-    for (int i=1; i<=8; i++) {
+    for (int i=1; i<=10; i++) {
         checksum += DATAEE_ReadByte((uint16_t)i);
     }
-    DATAEE_WriteByte(0x09, checksum);
+    DATAEE_WriteByte(0x0B, checksum);
 }
