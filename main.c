@@ -100,46 +100,23 @@ unsigned char readTC74 (void) {
 	return value;
 }
 
-void Button_debounce(void) {
-    // Clear interrupt flag
-    PIR4bits.TMR3IF = 0;
-    
-    // Stop Timer 3
-    TMR3_StopTimer();
 
-    if (S1_press && !IO_RB4_S1_GetValue()) {
-        S1_pressed = true;
-    }
-    else if (S2_press && !IO_RC5_S2_GetValue()) {
-        S2_pressed = true;
-    }
-    
+void buttonS1(void){
+    S1_pressed = true;
     interrupt_occured = true;
     
-    // Reset button press flags
-    S1_press = 0;
-    S2_press = 0;
-}
-
-/**
- * Button press ISR
- */
-void Button_press(void) {
-    
-    if(!IO_RB4_S1_GetValue()) { S1_press = 1; }
-    else if(!IO_RC5_S2_GetValue()) { S2_press = 1; }
-
-    // Stop Timer 3
-    TMR3_StopTimer();
-    // Reload Timer value
-    TMR3_Reload();
-    // Start Timer 3
-    TMR3_StartTimer();
-    
-    // Clear interrupt flag
+    // clear interrupt flag
     PIR0bits.IOCIF = 0;
-    
 }
+
+void buttonS2(void){
+    S2_pressed = true;
+    interrupt_occured = true;
+    
+    // clear interrupt flag
+    PIR0bits.IOCIF = 0;
+}
+
 
 /**
  * Timer 1 ISR
@@ -238,9 +215,7 @@ void Timer1_counter(void) {
     PIR4bits.TMR1IF = 0;
 }
 
-void getData(ui_display_data_t *data){
-    
-    // Fetch memory stored data
+void read_parameters(ui_display_data_t *data){
     memory_flag_t flag;
     do {
         flag = read_parameter(ALAH, &data->alarm_time.hour);
@@ -253,6 +228,12 @@ void getData(ui_display_data_t *data){
             memory_reset();
         }
     } while (flag == MEM_CORRUPTED);
+}
+
+void getData(ui_display_data_t *data){
+    
+    // Fetch memory stored data
+    read_parameters(&data);
     
     data->temperature = temperature;
     data->luminosity = (uint8_t)luminosity;
@@ -264,11 +245,40 @@ void getData(ui_display_data_t *data){
     data->minimum_luminosity = minimum_luminosity;
 }
 
+void write_parameters(ui_display_data_t* data){
+    memory_flag_t flag;
+    flag = write_parameter(ALAH, data->alarm_time.hour);
+    flag = write_parameter(ALAM, data->alarm_time.minute);
+    flag = write_parameter(ALAS, data->alarm_time.second);
+    flag = write_parameter(ALAT, data->temperature_threshold);
+    flag = write_parameter(ALAL, data->luminosity_threshold);
+    flag = write_parameter(ALAF, data->alarms_enabled);
+    if (flag == MEM_CORRUPTED) {
+        memory_reset();
+    }
+}
+
+void first_reading(void){
+    temperature = (uint8_t) readTC74();
+    luminosity = ADCC_GetSingleConversion(RA0)*7/1023;
+    maximum_temperature.temperature = temperature;
+    maximum_temperature.luminosity = luminosity;
+    maximum_temperature.timestamp = current_time;
+    minimum_temperature.temperature = temperature;
+    minimum_temperature.luminosity = luminosity;
+    minimum_temperature.timestamp = current_time;
+    maximum_luminosity.temperature = temperature;
+    maximum_luminosity.luminosity = luminosity;
+    maximum_luminosity.timestamp = current_time;
+    minimum_luminosity.temperature = temperature;
+    minimum_luminosity.luminosity = luminosity;
+    minimum_luminosity.timestamp = current_time;
+}
+
 void main(void) {    
-    //char buf[17];
     ui_display_data_t data;
 
-    // initialize the device
+    // Initialize the device
     SYSTEM_Initialize();
 
     // Enable the Global Interrupts
@@ -309,31 +319,12 @@ void main(void) {
     // Start Timer 1
     TMR1_StartTimer();
     
-    // Setting Timer 3 interrupt handler
-    TMR3_SetInterruptHandler(Button_debounce);
-    // Stop Timer 3
-    TMR3_StopTimer();
-
     // Setting button press interrupt handler
-    IOCBF4_SetInterruptHandler(Button_press);
-    IOCCF5_SetInterruptHandler(Button_press);
+    IOCBF4_SetInterruptHandler(buttonS1);
+    IOCCF5_SetInterruptHandler(buttonS2);
     
     // First reading
-    temperature = (uint8_t) readTC74();
-    luminosity = ADCC_GetSingleConversion(RA0)*7/1023;
-    maximum_temperature.temperature = temperature;
-    maximum_temperature.luminosity = luminosity;
-    maximum_temperature.timestamp = current_time;
-    minimum_temperature.temperature = temperature;
-    minimum_temperature.luminosity = luminosity;
-    minimum_temperature.timestamp = current_time;
-    maximum_luminosity.temperature = temperature;
-    maximum_luminosity.luminosity = luminosity;
-    maximum_luminosity.timestamp = current_time;
-    minimum_luminosity.temperature = temperature;
-    minimum_luminosity.luminosity = luminosity;
-    minimum_luminosity.timestamp = current_time;
-    
+    first_reading();
 
     while (1) {
         
@@ -341,6 +332,7 @@ void main(void) {
         NOP(); // ensure instruction pre-fetched while sleeping is safe to execute on awakening
         
         if (interrupt_occured || ui_timeout_pending) {
+            
             // Fetch data
             getData(&data);
             
@@ -353,29 +345,8 @@ void main(void) {
             S2_pressed = false;
             
             // Update memory
-            memory_flag_t flag;
-            flag = write_parameter(ALAH, data.alarm_time.hour);
-            flag = write_parameter(ALAM, data.alarm_time.minute);
-            flag = write_parameter(ALAS, data.alarm_time.second);
-            flag = write_parameter(ALAT, data.temperature_threshold);
-            flag = write_parameter(ALAL, data.luminosity_threshold);
-            flag = write_parameter(ALAF, data.alarms_enabled);
-            if (flag == MEM_CORRUPTED) {
-                memory_reset();
-            }
+            write_parameters(&data);
+
         }
-        
-//        S1_pressed = 0;
-//        S2_pressed = 0;
-//        time_ms = time_ms + 1000;
-//        
-//        getData(&data);
-//
-//        if(!IO_RB4_S1_GetValue()) { S1_pressed = 1; }
-//        if(!IO_RC5_S2_GetValue()) { S2_pressed = 1; }
-//
-//        ui_update(&data,S1_pressed,S2_pressed, time_ms);
-//        __delay_ms(1000);
-        
     }
 }

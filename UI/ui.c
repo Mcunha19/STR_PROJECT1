@@ -9,6 +9,7 @@
 UI_State state = UI_NORMAL;
 static uint8_t redraw = 1u;
 volatile uint8_t ui_timeout_pending;
+extern time_t current_time;
 
 static void ui_timed_screen_timeout(void)
 {
@@ -367,7 +368,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
             if (s1_pressed) {
                 ui_enter(state + 1);
             } else if (s2_pressed) {
-                ui_increment_time_field(&data->current_time,
+                ui_increment_time_field(&current_time,
                                         (uint8_t)(state - UI_CONFIG_CLKH));
                 redraw = 1u;
             }
