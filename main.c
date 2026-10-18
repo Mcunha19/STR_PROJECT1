@@ -48,7 +48,8 @@
 #include "Time/Time.h"
 #include "UI/ui.h"
 
-#include "stdio.h"
+#include "mcc_generated_files/pin_manager.h"
+#include "mcc_generated_files/tmr2.h"
 #include "stdbool.h"
 
 /**************** Global Variables ********************/
@@ -60,7 +61,7 @@ ui_record_t minimum_temperature;
 ui_record_t maximum_luminosity;
 ui_record_t minimum_luminosity;
 
-uint8_t alarm_notification_mask, read_sensors = 1;
+volatile uint8_t alarm_notification_mask, read_sensors = 1, buzzer;
 
 volatile bool interrupt_occured;
 volatile bool S1_press, S2_press, S1_pressed, S2_pressed;
@@ -152,10 +153,10 @@ void Timer1_counter(void) {
             alarm_s == current_time.second) {
             
             alarm_notification_mask |= UI_ALARM_CLOCK;
-            
+
             // Start buzzer
-            // TODO
-            ///////////////
+	    TMR2_Start();
+	    buzzer = TALA_DEFAULT;
         }
     }
     
@@ -193,20 +194,40 @@ void Timer1_counter(void) {
         } else if (alarm_flag) {
             if (alarm_t <= temperature) {
                 alarm_notification_mask |= UI_ALARM_TEMP;
-
+		
                 // Start buzzer
-                // TODO
-                ///////////////
-            }
+		if (!IO_RA6_D4_GetValue()) {
+		    TMR2_Start();
+	    	    buzzer = TALA_DEFAULT;	
+		}
+
+		// Turn on LED
+		IO_RA6_D4_SetHigh();
+
+            } else {
+		IO_RA6_D4_SetLow();
+	    }
             if (alarm_l >= luminosity) {
                 alarm_notification_mask |= UI_ALARM_LUM;
+		
+            	if (!IO_RA5_D3_GetValue()) {
+		    TMR2_Start();
+	    	    buzzer = TALA_DEFAULT;	
+		}
+		
+		// Turn on LED
+		IO_RA5_D3_SetHigh();
 
-                // Start buzzer
-                // TODO
-                ///////////////
-            }
+	    } else {
+		IO_RA5_D3_SetLow();
+	    }
         }
         read_sensors = 1;
+    }
+
+    // Decrement buzzer counter
+    if ((buzzer--)==0) {
+	TMR2_Stop();
     }
     
     interrupt_occured = true;
