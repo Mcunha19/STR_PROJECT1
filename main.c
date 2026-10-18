@@ -233,7 +233,7 @@ void read_parameters(ui_display_data_t *data){
 void getData(ui_display_data_t *data){
     
     // Fetch memory stored data
-    read_parameters(&data);
+    read_parameters(data);
     
     data->temperature = temperature;
     data->luminosity = (uint8_t)luminosity;
@@ -246,6 +246,9 @@ void getData(ui_display_data_t *data){
 }
 
 void write_parameters(ui_display_data_t* data){
+    // Disable Timer 1 interrupt
+    PIE4bits.TMR1IE = 0b0;
+
     memory_flag_t flag;
     flag = write_parameter(ALAH, data->alarm_time.hour);
     flag = write_parameter(ALAM, data->alarm_time.minute);
@@ -256,6 +259,10 @@ void write_parameters(ui_display_data_t* data){
     if (flag == MEM_CORRUPTED) {
         memory_reset();
     }
+    current_time = data->current_time;
+    
+    // Enable Timer 1 interrupt
+    PIE4bits.TMR1IE = 0b1;
 }
 
 void first_reading(void){
