@@ -92,8 +92,8 @@ void TMR5_Initialize(void)
     // Set Default Interrupt Handler
     TMR5_SetInterruptHandler(TMR5_DefaultInterruptHandler);
 
-    // CKPS 1:1; nT5SYNC synchronize; TMR5ON enabled; T5RD16 disabled; 
-    T5CON = 0x01;
+    // CKPS 1:1; nT5SYNC do_not_synchronize; TMR5ON enabled; T5RD16 disabled; 
+    T5CON = 0x05;
 }
 
 void TMR5_StartTimer(void)

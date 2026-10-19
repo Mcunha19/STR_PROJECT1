@@ -41,7 +41,7 @@ typedef struct {
     time_t alarm_time;
     int8_t temperature;
     uint8_t luminosity;
-    uint8_t temperature_threshold;
+    int8_t temperature_threshold;
     uint8_t luminosity_threshold;
     uint8_t alarms_enabled;
     uint8_t alarm_notifications;

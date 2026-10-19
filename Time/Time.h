@@ -28,11 +28,10 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef TIME_H
+#define	TIME_H
 
-#include <xc.h>  
-#include "../mcc_generated_files/tmr1.h"
+#include <stdint.h>
 
 typedef struct {
     uint8_t hour;
@@ -43,12 +42,6 @@ typedef struct {
 int Time_reset(time_t* time);
 
 int Time_increment(time_t *time);
-
-int Time_setHours(time_t *time, uint8_t hours);
-
-int Time_setMinutes(time_t *time, uint8_t minutes);
-
-int Time_setSeconds(time_t *time, uint8_t seconds);
 
 #endif
 

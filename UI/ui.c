@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include "../mcc_generated_files/mcc.h"
 #include "../LCD/lcd.h"
 #include "ui.h"
@@ -54,7 +55,7 @@ static void ui_write_luminosity(uint8_t luminosity)
     LCDstr(text);
 }
 
-static void ui_write_HH(uint8_t hours)
+static void ui_write_tt(uint8_t hours)
 {
     char text[3];
 
@@ -62,29 +63,13 @@ static void ui_write_HH(uint8_t hours)
     LCDstr(text);
 }
 
-static void ui_write_mm(uint8_t minutes)
-{
-    char text[3];
-
-    sprintf(text, "%02u", (unsigned int)minutes);
-    LCDstr(text);
-}
-
-static void ui_write_ss(uint8_t seconds)
-{
-    char text[3];
-
-    sprintf(text, "%02u", (unsigned int)seconds);
-    LCDstr(text);
-}
-
 static void ui_write_clock(const time_t *time)
 {
-    ui_write_HH(time->hour);
+    ui_write_tt(time->hour);
     LCDstr(":");
-    ui_write_mm(time->minute);
+    ui_write_tt(time->minute);
     LCDstr(":");
-    ui_write_ss(time->second);
+    ui_write_tt(time->second);
 }
 
 static void ui_show_cursor(uint8_t row, uint8_t column)
@@ -145,13 +130,13 @@ static void ui_draw_thresholds(const ui_display_data_t *data)
 {
     ui_write_line(0, "Alarm ");
     LCDpos(0, 6);
-    ui_write_HH(data->alarm_time.hour);
+    ui_write_tt(data->alarm_time.hour);
     LCDstr(":");
-    ui_write_mm(data->alarm_time.minute);
+    ui_write_tt(data->alarm_time.minute);
 
     ui_write_line(1, "T:");
     LCDpos(1, 2);
-    ui_write_temperature((int8_t)data->temperature_threshold);
+    ui_write_temperature(data->temperature_threshold);
     LCDstr("  L:");
     ui_write_luminosity(data->luminosity_threshold);
     ui_hide_cursor();
@@ -336,6 +321,7 @@ static void ui_reset_records(ui_display_data_t *data)
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
                uint8_t s2_pressed)
 {
+    uint8_t buffer;
     if (data == NULL)
         return;
 
@@ -396,9 +382,11 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
 
         case UI_CONFIG_T:
         case UI_CONFIG_T_ALAT:
-            ui_update_threshold(&data->temperature_threshold, 50u,
+            
+            ui_update_threshold(&buffer, 50u,
                                 UI_CONFIG_T_ALAT, UI_CONFIG_L,
                                 s1_pressed, s2_pressed);
+            memcpy(&data->temperature_threshold, &buffer, sizeof(uint8_t));
             break;
 
         case UI_CONFIG_L:
