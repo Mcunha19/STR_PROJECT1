@@ -62,18 +62,30 @@ ui_record_t minimum_temperature;
 ui_record_t maximum_luminosity;
 ui_record_t minimum_luminosity;
 
-volatile uint8_t alarm_notification_mask, read_sensors = 1, buzzer;
+volatile uint8_t alarm_notification_mask, buzzer, read_sensors = 1;
 
 volatile bool interrupt_occured, tick = false;
 volatile bool S1_press, S2_press, S1_pressed, S2_pressed;
 /******************************************************/
- 
+
+
+/**
+ * Reads potentiometer value and converts it to a scale of 0 to 7.
+ * 
+ * @return Luminosity value. 
+ */
 uint8_t getPOTvalue(){
     int signal = ADCC_GetSingleConversion(RA0)*7/1023;
     uint8_t value = (uint8_t) signal;
     return value;
 }
 
+
+/**
+ * Reads the temperature sensor.
+ * 
+ * @return Temperature reading in 2's complement format.
+ */
 unsigned char readTC74 (void) {
 	unsigned char value;
     do {
@@ -103,6 +115,9 @@ unsigned char readTC74 (void) {
 }
 
 
+/**
+ * Button S1 falling edge ISR.
+ */
 void buttonS1(void){
     
     // TEMPORARY////
@@ -116,6 +131,10 @@ void buttonS1(void){
     PIR0bits.IOCIF = 0;
 }
 
+
+/**
+ * Button S2 falling edge ISR.
+ */
 void buttonS2(void){
     
     // TEMPORARY////
@@ -141,6 +160,15 @@ void Timer1_counter(void) {
     PIR4bits.TMR1IF = 0;
 }
 
+
+/**
+ * Tasks to be executed every tick of Timer 1.
+ * 
+ * 1. Increments global time variable
+ * 2. Verifies the Time, Temperature and Luminosity thresholds
+ * 3. Reads the sensors
+ * 4. Executes the alarm in case of any threshold breach
+ */
 void timer_tick(void) {
     
     // Increment time variable
@@ -254,7 +282,15 @@ void timer_tick(void) {
     }
 }
 
-void read_parameters(ui_display_data_t *data){
+
+/**
+ * Fetches local data to be passed to the User Interface API.
+ * 
+ * @param data pointer to the data structure where local data will be copied to.
+ */
+void getData(ui_display_data_t *data){
+    
+    // Fetch memory stored data
     memory_flag_t flag;
     do {
         flag = read_parameter(ALAH, &data->alarm_time.hour);
@@ -269,14 +305,7 @@ void read_parameters(ui_display_data_t *data){
             memory_reset();
         }
     } while (flag == MEM_CORRUPTED);
-}
-
-void getData(ui_display_data_t *data){
     
-    // Fetch memory stored data
-    read_parameters(data);
-    
-    // data->temperature = temperature;
     memcpy(&data->temperature, &temperature, sizeof(uint8_t));
     data->luminosity = luminosity;
     data->current_time = current_time;
@@ -287,6 +316,13 @@ void getData(ui_display_data_t *data){
     data->minimum_luminosity = minimum_luminosity;
 }
 
+
+/**
+ * Updates local data with the values updated by the User Interface.
+ * 
+ * @param data pointer to the data structure from which local data will be 
+ * updated.
+ */
 void write_parameters(ui_display_data_t* data){
     memory_flag_t flag;
     flag = write_parameter(ALAH, data->alarm_time.hour);
@@ -303,6 +339,10 @@ void write_parameters(ui_display_data_t* data){
     current_time = data->current_time;
 }
 
+
+/**
+ * Initializes Temperature and Luminosity records.
+ */
 void first_reading(void){
     maximum_temperature.temperature = ALAT_DEFAULT;
     maximum_temperature.luminosity = ALAL_DEFAULT;

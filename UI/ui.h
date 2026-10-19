@@ -2,6 +2,7 @@
 #define UI_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "../Time/Time.h"
 
 typedef enum {
@@ -51,7 +52,7 @@ typedef struct {
     ui_record_t minimum_luminosity;
 } ui_display_data_t;
 
-extern volatile uint8_t ui_timeout_pending;
+extern volatile bool ui_timeout_pending;
 
 void ui_init(void);
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,

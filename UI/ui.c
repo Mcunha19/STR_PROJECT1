@@ -1,37 +1,35 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "../mcc_generated_files/mcc.h"
 #include "../LCD/lcd.h"
+#include "../mcc_generated_files/tmr5.h"
 #include "ui.h"
 
 #define UI_TIMER5_TICKS_PER_SECOND 31000u
 
 UI_State state = UI_NORMAL;
-static uint8_t redraw = 1u;
-volatile uint8_t ui_timeout_pending;
+static bool redraw = 1u;
+volatile bool ui_timeout_pending;
 extern time_t current_time;
 
-static void ui_timed_screen_timeout(void)
-{
+static void ui_timed_screen_timeout(void) {
     PIR4bits.TMR5IF = 0;
     TMR5_StopTimer();
-    ui_timeout_pending = 1u;
+    ui_timeout_pending = true;
 }
 
-void ui_init(void)
-{
+void ui_init(void) {
     state = UI_NORMAL;
-    redraw = 1u;
-    ui_timeout_pending = 0u;
+    redraw = true;
+    ui_timeout_pending = false;
 
     TMR5_StopTimer();
     PIR4bits.TMR5IF = 0;
     TMR5_SetInterruptHandler(ui_timed_screen_timeout);
 }
 
-static void ui_write_line(uint8_t row, const char *text)
-{
+static void ui_write_line(uint8_t row, const char *text) {
     char line[17];
 
     sprintf(line, "%-16.16s", text);
@@ -39,57 +37,50 @@ static void ui_write_line(uint8_t row, const char *text)
     LCDstr(line);
 }
 
-static void ui_write_temperature(int8_t temperature)
-{
+static void ui_write_temperature(int8_t temperature) {
     char text[6];
 
     sprintf(text, "%dC", (int)temperature);
     LCDstr(text);
 }
 
-static void ui_write_luminosity(uint8_t luminosity)
-{
+static void ui_write_luminosity(uint8_t luminosity) {
     char text[4];
 
     sprintf(text, "%u", (unsigned int)luminosity);
     LCDstr(text);
 }
 
-static void ui_write_tt(uint8_t hours)
-{
+static void ui_write_t(uint8_t hours) {
     char text[3];
 
     sprintf(text, "%02u", (unsigned int)hours);
     LCDstr(text);
 }
 
-static void ui_write_clock(const time_t *time)
-{
-    ui_write_tt(time->hour);
+static void ui_write_clock(const time_t *time) {
+    ui_write_t(time->hour);
     LCDstr(":");
-    ui_write_tt(time->minute);
+    ui_write_t(time->minute);
     LCDstr(":");
-    ui_write_tt(time->second);
+    ui_write_t(time->second);
 }
 
-static void ui_show_cursor(uint8_t row, uint8_t column)
-{
+static void ui_show_cursor(uint8_t row, uint8_t column) {
     LCDpos(row, column);
     LCDcmd(0x0f);
 }
 
-static void ui_hide_cursor(void)
-{
+static void ui_hide_cursor(void) {
     LCDcmd(0x0c);
 }
 
-static void ui_enter(UI_State next)
-{
+static void ui_enter(UI_State next) {
     uint16_t preload;
 
     state = next;
-    redraw = 1u;
-    ui_timeout_pending = 0u;
+    redraw = true;
+    ui_timeout_pending = false;
 
     TMR5_StopTimer();
     PIR4bits.TMR5IF = 0;
@@ -105,8 +96,7 @@ static void ui_enter(UI_State next)
     }
 }
 
-static void ui_draw_normal(const ui_display_data_t *data)
-{
+static void ui_draw_normal(const ui_display_data_t *data) {
     char line[17];
 
     LCDpos(0, 0);
@@ -126,13 +116,12 @@ static void ui_draw_normal(const ui_display_data_t *data)
     ui_hide_cursor();
 }
 
-static void ui_draw_thresholds(const ui_display_data_t *data)
-{
+static void ui_draw_thresholds(const ui_display_data_t *data) {
     ui_write_line(0, "Alarm ");
     LCDpos(0, 6);
-    ui_write_tt(data->alarm_time.hour);
+    ui_write_t(data->alarm_time.hour);
     LCDstr(":");
-    ui_write_tt(data->alarm_time.minute);
+    ui_write_t(data->alarm_time.minute);
 
     ui_write_line(1, "T:");
     LCDpos(1, 2);
@@ -142,8 +131,7 @@ static void ui_draw_thresholds(const ui_display_data_t *data)
     ui_hide_cursor();
 }
 
-static void ui_draw_config(const ui_display_data_t *data)
-{
+static void ui_draw_config(const ui_display_data_t *data) {
     char line[17];
     uint8_t row = 0u;
     uint8_t column = 0u;
@@ -202,8 +190,7 @@ static void ui_draw_config(const ui_display_data_t *data)
     ui_show_cursor(row, column);
 }
 
-static void ui_draw_temperature_records(const ui_display_data_t *data)
-{
+static void ui_draw_temperature_records(const ui_display_data_t *data) {
     char line[17];
 
     ui_write_line(0, "Max ");
@@ -224,8 +211,7 @@ static void ui_draw_temperature_records(const ui_display_data_t *data)
     ui_hide_cursor();
 }
 
-static void ui_draw_luminosity_records(const ui_display_data_t *data)
-{
+static void ui_draw_luminosity_records(const ui_display_data_t *data) {
     char line[17];
 
     ui_write_line(0, "Max L");
@@ -246,8 +232,7 @@ static void ui_draw_luminosity_records(const ui_display_data_t *data)
     ui_hide_cursor();
 }
 
-static void ui_draw(const ui_display_data_t *data)
-{
+static void ui_draw(const ui_display_data_t *data) {
     switch (state) {
         case UI_NORMAL:
             ui_draw_normal(data);
@@ -267,8 +252,7 @@ static void ui_draw(const ui_display_data_t *data)
     }
 }
 
-static void ui_increment_time_field(time_t *time, uint8_t field)
-{
+static void ui_increment_time_field(time_t *time, uint8_t field) {
     if (field == 0u)
         time->hour = (uint8_t)((time->hour + 1u) % 24u);
     else if (field == 1u)
@@ -277,10 +261,9 @@ static void ui_increment_time_field(time_t *time, uint8_t field)
         time->second = (uint8_t)((time->second + 1u) % 60u);
 }
 
-static void ui_update_timed_screen(UI_State next)
-{
+static void ui_update_timed_screen(UI_State next) {
     if (ui_timeout_pending) {
-        ui_timeout_pending = 0u;
+        ui_timeout_pending = true;
         ui_enter(next);
     }
 }
@@ -294,7 +277,7 @@ static void ui_update_threshold(uint8_t *threshold, uint8_t maximum,
     } else if (s2_pressed) {
         if (state == edit_state) {
             *threshold = (uint8_t)((*threshold + 1u) % (maximum + 1u));
-            redraw = 1u;
+            redraw = true;
         } else {
             ui_enter(edit_state);
         }
@@ -356,7 +339,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
             } else if (s2_pressed) {
                 ui_increment_time_field(&data->current_time,
                                         (uint8_t)(state - UI_CONFIG_CLKH));
-                redraw = 1u;
+                redraw = true;
             }
             break;
 
@@ -376,7 +359,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
             } else if (s2_pressed) {
                 ui_increment_time_field(&data->alarm_time, 
                                         (uint8_t)(state - UI_CONFIG_C_ALAH));
-                redraw = 1u;
+                redraw = true;
             }
             break;
 
@@ -401,7 +384,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
                 ui_enter(UI_RECORDS_RESET);
             else if (s2_pressed) {
                 data->alarms_enabled = !data->alarms_enabled;
-                redraw = 1u;
+                redraw = true;
             }
             break;
 
@@ -410,7 +393,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
                 ui_enter(UI_NORMAL);
             else if (s2_pressed) {
                 ui_reset_records(data);
-                redraw = 1u;
+                redraw = true;
             }
             break;
 
@@ -421,6 +404,7 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
 
     if (redraw || state == UI_NORMAL) {
         ui_draw(data);
-        redraw = 0u;
+        redraw = false;
     }
 }
+
