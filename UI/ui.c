@@ -154,12 +154,12 @@ static void ui_draw_config(const ui_display_data_t *data) {
         else
             column = 12u;
     } else if (state == UI_CONFIG_C_ALAH || state == UI_CONFIG_C_ALAM || 
-        state == UI_CONFIG_C_ALAS) {
+        state == UI_CONFIG_C_ALAS || state == UI_CONFIG_C) {
         ui_write_line(0, "Alarm ");
         LCDpos(0, 6);
         ui_write_clock(&data->alarm_time);
 
-        if (state == UI_CONFIG_C_ALAH)
+        if (state == UI_CONFIG_C_ALAH || state == UI_CONFIG_C)
             column = 6u;
         else if (state == UI_CONFIG_C_ALAM)
             column = 9u;
