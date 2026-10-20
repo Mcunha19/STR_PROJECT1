@@ -106,7 +106,7 @@ static void ui_draw_normal(const ui_display_data_t *data) {
 
     LCDpos(0, 0);
     ui_write_clock(&data->current_time);
-    sprintf(line, " %c%c%c%c",
+    sprintf(line, " %c%c%c%c   ",
             (data->alarm_notifications & UI_ALARM_CLOCK) ? 'C' : ' ',
             (data->alarm_notifications & UI_ALARM_TEMP) ? 'T' : ' ',
             (data->alarm_notifications & UI_ALARM_LUM) ? 'L' : ' ',
