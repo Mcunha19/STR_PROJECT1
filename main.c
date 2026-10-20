@@ -206,6 +206,7 @@ void timer_tick(void) {
             alarm_notification_mask |= UI_ALARM_CLOCK;
 
             // Start buzzer
+            RA4PPS = 0x0E;   //RA4->PWM6:PWM6OUT;
             TMR2_Start();
             buzzer = TALA_DEFAULT;
         }
@@ -246,11 +247,14 @@ void timer_tick(void) {
             memory_reset();
             m_flag = MEM_OK;
         } else if (alarm_flag) {
+            
+            // Check temperature threshold
             if (alarm_t <= temperature) {
                 alarm_notification_mask |= UI_ALARM_TEMP;
 		
                 // Start buzzer
                 if (!IO_RA6_D4_GetValue()) {
+                    RA4PPS = 0x0E;   //RA4->PWM6:PWM6OUT;
                     TMR2_Start();
                     buzzer = TALA_DEFAULT;	
                 }
@@ -259,12 +263,16 @@ void timer_tick(void) {
                 IO_RA6_D4_SetHigh();
 
             } else {
+                // Turn off LED
                 IO_RA6_D4_SetLow();
             }
+            
+            // Check luminosity threshold
             if (alarm_l >= luminosity) {
                 alarm_notification_mask |= UI_ALARM_LUM;
 		
             	if (!IO_RA5_D3_GetValue()) {
+                    RA4PPS = 0x0E;   //RA4->PWM6:PWM6OUT;
                     TMR2_Start();
                     buzzer = TALA_DEFAULT;	
                 }
@@ -273,6 +281,7 @@ void timer_tick(void) {
                 IO_RA5_D3_SetHigh();
 
             } else {
+                // Turn off LED
                 IO_RA5_D3_SetLow();
             }
         }
@@ -281,7 +290,9 @@ void timer_tick(void) {
 
     // Decrement buzzer counter
     if ((buzzer--)==0) {
+        RA4PPS = 0x00;
         TMR2_Stop();
+        IO_RA4_D2_SetLow();
     }
 }
 
@@ -352,6 +363,7 @@ void first_reading(void){
     }
     
     temperature = (uint8_t) readTC74();
+    temperature = (temperature > MAX_TEMPERATURE) ? ALAT_DEFAULT : temperature;
     luminosity = getPOTvalue();
     
     maximum_temperature.temperature = temperature;
@@ -417,11 +429,6 @@ void main(void) {
         
         SLEEP(); // wait for interrupt
         NOP(); // ensure instruction pre-fetched while sleeping is safe to execute on awakening
-        
-        // REMOVE /////////////////////////////////
-        DATAEE_WriteByte(0xF020, 0x55);
-        volatile uint8_t value = DATAEE_ReadByte(0xF020);
-        ///////////////////////////////////////////
         
         if (tick) {
             timer_tick();

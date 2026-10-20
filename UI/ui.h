@@ -55,8 +55,7 @@ typedef struct {
 extern volatile bool ui_timeout_pending;
 
 void ui_init(void);
-void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
-               uint8_t s2_pressed);
 
+void ui_update(ui_display_data_t *data, bool s1_pressed, bool s2_pressed);
 
 #endif

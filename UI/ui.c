@@ -5,6 +5,7 @@
 #include "../LCD/lcd.h"
 #include "../mcc_generated_files/tmr5.h"
 #include "ui.h"
+#include "../EEPROM/config_storage.h"
 
 #define UI_TIMER5_TICKS_PER_SECOND 31000u
 
@@ -13,6 +14,10 @@ static bool redraw = 1u;
 volatile bool ui_timeout_pending;
 extern time_t current_time;
 
+
+/**
+ * Timer 5 rollover ISR.
+ */
 static void ui_timed_screen_timeout(void) {
     PIR4bits.TMR5IF = 0;
     TMR5_StopTimer();
@@ -268,10 +273,21 @@ static void ui_update_timed_screen(UI_State next) {
     }
 }
 
+
+/**
+ * Updates a given threshold, incrementing it by 1 and resetting it to 0 if it
+ * exceeds the maximum provided value.
+ * 
+ * @param threshold pointer to the threshold value to update
+ * @param maximum maximum value of the threshold
+ * @param edit_state state in which the threshold is to be updated
+ * @param next_state state after the current one
+ * @param s1_pressed true if S1 is pressed, false otherwise
+ * @param s2_pressed true if S2 is pressed, false otherwise
+ */
 static void ui_update_threshold(uint8_t* threshold, uint8_t maximum,
                                 UI_State edit_state, UI_State next_state,
-                                uint8_t s1_pressed, uint8_t s2_pressed)
-{
+                                bool s1_pressed, bool s2_pressed) {
     if (s1_pressed) {
         ui_enter(next_state);
     } else if (s2_pressed) {
@@ -284,31 +300,44 @@ static void ui_update_threshold(uint8_t* threshold, uint8_t maximum,
     }
 }
 
-static void clear_record(ui_record_t *record)
-{
-    record->timestamp.hour = 0u;
+
+/**
+ * Resets a record to the default values.
+ * 
+ * @param record pointer to the record to reset.
+ */
+static void clear_record(ui_record_t *record) {
+    record->timestamp.hour = 12u;
     record->timestamp.minute = 0u;
     record->timestamp.second = 0u;
-    record->temperature = 0u;
-    record->luminosity = 0u;
+    record->temperature = ALAT_DEFAULT;
+    record->luminosity = ALAL_DEFAULT;
 }
 
-static void ui_reset_records(ui_display_data_t *data)
-{
+
+/**
+ * Resets maximum and minimum temperature and luminosity records. The 
+ * temperature and luminosity values were chosen to be reset to the default
+ * threshold values and the time is reset to 12h00m00s.
+ * 
+ * @param data pointer to the ui data structure.
+ */
+static void ui_reset_records(ui_display_data_t *data) {
     clear_record(&data->maximum_temperature);
     clear_record(&data->minimum_temperature);
     clear_record(&data->maximum_luminosity);
     clear_record(&data->minimum_luminosity);
 }
 
-void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
-               uint8_t s2_pressed) {
+void ui_update(ui_display_data_t *data, bool s1_pressed,
+               bool s2_pressed) {
     if (data == NULL)
         return;
 
     switch (state) {
         case UI_NORMAL:
             if (s1_pressed) {
+                // Clear alarm notifications
                 data->alarm_notifications = 0u;
                 ui_enter(UI_SHOW_THRESHOLDS);
             } else if (s2_pressed) {
