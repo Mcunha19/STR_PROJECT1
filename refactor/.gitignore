@@ -1,0 +1,8 @@
+dist/
+build/
+.vscode/
+*.log
+_build/
+cmake/
+.clangd
+.xc8-project
