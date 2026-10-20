@@ -77,6 +77,50 @@ memory_flag_t read_parameter(parameter_t parameter, uint8_t* buffer) {
     return MEM_OK;
 }
 
+memory_flag_t write_record(parameter_t record, record_t buffer) {
+    // Validate parameters
+    if ((record<=record_START) ||
+        (record>=record_END)) {
+        return MEM_API_ERROR;
+    }
+
+    DATAEE_WriteByte((uint16_t)record_START | 0xF000, MW);
+
+    uint16_t add = (uint16_t)(5*(record-record_START) - 4);
+    add = ((uint16_t)record_START + add) | 0xF000;
+
+    DATAEE_WriteByte(add, buffer.timestamp.hour);
+    DATAEE_WriteByte(add+1, buffer.timestamp.minute);
+    DATAEE_WriteByte(add+2, buffer.timestamp.second);
+    DATAEE_WriteByte(add+3, buffer.temperature);
+    DATAEE_WriteByte(add+4, buffer.luminosity);
+    return MEM_OK;
+}
+
+memory_flag_t read_record(parameter_t record, record_t* buffer) {
+    // Validate parameters
+    if ((record<=record_START) ||
+        (record>=record_END)   || !buffer ||
+        !records_exist()) {
+        return MEM_API_ERROR;
+    }
+
+    uint16_t add = (uint16_t)(5*(record-record_START) - 4);
+    add = ((uint16_t)record_START + add) | 0xF000;
+
+    buffer->timestamp.hour = DATAEE_ReadByte(add);
+    buffer->timestamp.minute = DATAEE_ReadByte(add+1);
+    buffer->timestamp.second = DATAEE_ReadByte(add+2);
+    buffer->temperature = DATAEE_ReadByte(add+3);
+    buffer->luminosity = DATAEE_ReadByte(add+4);
+
+    return MEM_OK;
+}
+
+bool records_exist(void) {
+    return DATAEE_ReadByte((uint16_t)record_START | 0xF000) == MW;
+}
+
 void memory_reset(void) {
     DATAEE_WriteByte(0xF000, MW);
     DATAEE_WriteByte((uint16_t)PMON | 0xF000, PMON_DEFAULT);

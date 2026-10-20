@@ -21,7 +21,7 @@
 
 /* 
  * File:   config_storage.h
- * Author: Tomás Seabra
+ * Author: Tomï¿½s Seabra
  * Comments:
  * Revision history: 
  */
@@ -30,7 +30,9 @@
 #define	CONFIG_STORAGE_H
 
 #include <xc.h>
+#include <stdbool.h>
 #include "..\mcc_generated_files\memory.h"
+#include "..\Time\Time.h"
 
 #define MW 0xA5
 
@@ -59,8 +61,22 @@ typedef enum {
     CLKH,  // clock hours
     CLKM,   // clock minutes
             
-    parameter_END
+    parameter_END,
+    record_START,
+
+    MAX_TEMP_REC,
+    MIN_TEMP_REC,
+    MAX_LUM_REC,
+    MIN_LUM_REC,
+
+    record_END
 } parameter_t;
+
+typedef struct {
+    time_t timestamp;
+    uint8_t temperature;
+    uint8_t luminosity;
+} record_t;
 
 typedef enum {
     MEM_OK,         // no error
@@ -74,6 +90,12 @@ memory_flag_t memory_init(void);
 memory_flag_t write_parameter(parameter_t parameter, uint8_t buffer);
 
 memory_flag_t read_parameter(parameter_t parameter, uint8_t* buffer);
+
+memory_flag_t write_record(parameter_t record, record_t buffer);
+
+memory_flag_t read_record(parameter_t record, record_t* buffer);
+
+bool records_exist(void);
 
 void memory_reset(void);
 

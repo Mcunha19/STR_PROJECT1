@@ -1,11 +1,16 @@
-# Relatório — Sistema de Monitorização e Alarmes
+# Report - Monitoring and Alarm System
 
-**Unidade curricular:** Sistemas de Tempo Real — Projeto, Parte 1 (PIC)  
-**Grupo:**   
-**Elementos:** 
-**Plataforma:** Curiosity High Pin Count, PIC16F18875
+**Course:** Real Time Systems - Project part 1 - PIC  
+**Group:**  7\
+**Members:**
+&#8195; 99565 &#8195; Tomás Reis Seabra\
+&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;106081 &#8195;João Leonardo Nicolau Ferreira\
+&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;113175 &#8195;Marco António Mota Cunha\
+**Platform:** Curiosity High Pin Count, PIC16F18875
 
-## 1. Objetivo e organização
+## 1. Goals and Project Organization
+
+The project consists of an embedded system implementing an alarm with clock, temperature and luminosity monitoring, in accordance with the project's handout.
 
 O projeto implementa um sistema embebido de um alarme, com monitorização de horário, temperatura e luminosidade, de acordo com o enunciado da Parte 1. Foi desenvolvida uma solução em C sem sistema operativo, adequada aos recursos do microcontrolador. O código está dividido por responsabilidade: controlo e integração em [main.c](./main.c), interface em [UI/ui.c](./UI/ui.c), relógio em [Time/Time.c](./Time/Time.c), acesso à EEPROM em [EEPROM/config_storage.c](./EEPROM/config_storage.c), comunicação I²C em [I2C/i2c.c](./I2C/i2c.c) e controlo do LCD em [LCD/lcd.c](./LCD/lcd.c). A configuração dos periféricos e os respetivos drivers foram gerados pelo MPLAB Code Configurator.
 

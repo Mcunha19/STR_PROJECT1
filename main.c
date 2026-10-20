@@ -59,10 +59,10 @@
 time_t current_time;
 uint8_t temperature;
 uint8_t luminosity;
-ui_record_t maximum_temperature;
-ui_record_t minimum_temperature;
-ui_record_t maximum_luminosity;
-ui_record_t minimum_luminosity;
+record_t maximum_temperature;
+record_t minimum_temperature;
+record_t maximum_luminosity;
+record_t minimum_luminosity;
 
 volatile uint8_t alarm_notification_mask, buzzer, read_sensors = 1;
 
@@ -224,20 +224,24 @@ void timer_tick(void) {
             maximum_temperature.temperature = temperature;
             maximum_temperature.luminosity = luminosity;
             maximum_temperature.timestamp = current_time;
+            write_record(MAX_TEMP_REC, maximum_temperature);
         } else if (temperature < minimum_temperature.temperature) {
             minimum_temperature.temperature = temperature;
             minimum_temperature.luminosity = luminosity;
             minimum_temperature.timestamp = current_time;
+            write_record(MIN_TEMP_REC, minimum_temperature);
         }
         
         if (luminosity > maximum_luminosity.luminosity) {
             maximum_luminosity.temperature = temperature;
             maximum_luminosity.luminosity = luminosity;
             maximum_luminosity.timestamp = current_time;
+            write_record(MAX_LUM_REC, maximum_luminosity);
         } else if (luminosity < minimum_luminosity.luminosity) {
             minimum_luminosity.temperature = temperature;
             minimum_luminosity.luminosity = luminosity;
             minimum_luminosity.timestamp = current_time;
+            write_record(MIN_LUM_REC, minimum_luminosity);
         }
         
         // Check thresholds
@@ -366,18 +370,32 @@ void first_reading(void){
     temperature = (temperature > MAX_TEMPERATURE) ? ALAT_DEFAULT : temperature;
     luminosity = getPOTvalue();
     
-    maximum_temperature.temperature = temperature;
-    maximum_temperature.luminosity = luminosity;
-    maximum_temperature.timestamp = current_time;
-    minimum_temperature.temperature = temperature;
-    minimum_temperature.luminosity = luminosity;
-    minimum_temperature.timestamp = current_time;
-    maximum_luminosity.temperature = temperature;
-    maximum_luminosity.luminosity = luminosity;
-    maximum_luminosity.timestamp = current_time;
-    minimum_luminosity.temperature = temperature;
-    minimum_luminosity.luminosity = luminosity;
-    minimum_luminosity.timestamp = current_time;
+    if (!records_exist()) {
+        maximum_temperature.temperature = temperature;
+        maximum_temperature.luminosity = luminosity;
+        maximum_temperature.timestamp = current_time;
+        minimum_temperature.temperature = temperature;
+        minimum_temperature.luminosity = luminosity;
+        minimum_temperature.timestamp = current_time;
+        maximum_luminosity.temperature = temperature;
+        maximum_luminosity.luminosity = luminosity;
+        maximum_luminosity.timestamp = current_time;
+        minimum_luminosity.temperature = temperature;
+        minimum_luminosity.luminosity = luminosity;
+        minimum_luminosity.timestamp = current_time;
+
+        // Update memory
+        write_record(MAX_TEMP_REC, maximum_temperature);
+        write_record(MIN_TEMP_REC, minimum_temperature);
+        write_record(MAX_LUM_REC, maximum_luminosity);
+        write_record(MIN_LUM_REC, minimum_luminosity);
+    } else {
+        // Read memory
+        read_record(MAX_TEMP_REC, &maximum_temperature);
+        read_record(MIN_TEMP_REC, &minimum_temperature);
+        read_record(MAX_LUM_REC, &maximum_luminosity);
+        read_record(MIN_LUM_REC, &minimum_luminosity);
+    }
 }
 
 void main(void) {    

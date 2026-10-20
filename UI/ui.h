@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../Time/Time.h"
+#include "../EEPROM/config_storage.h"
 
 typedef enum {
     UI_NORMAL,
@@ -32,12 +33,6 @@ extern UI_State state;
 #define UI_ALARM_LUM   0x04u
 
 typedef struct {
-    time_t timestamp;
-    uint8_t temperature;
-    uint8_t luminosity;
-} ui_record_t;
-
-typedef struct {
     time_t current_time;
     time_t alarm_time;
     uint8_t temperature;
@@ -46,10 +41,10 @@ typedef struct {
     uint8_t luminosity_threshold;
     uint8_t alarms_enabled;
     uint8_t alarm_notifications;
-    ui_record_t maximum_temperature;
-    ui_record_t minimum_temperature;
-    ui_record_t maximum_luminosity;
-    ui_record_t minimum_luminosity;
+    record_t maximum_temperature;
+    record_t minimum_temperature;
+    record_t maximum_luminosity;
+    record_t minimum_luminosity;
 } ui_display_data_t;
 
 extern volatile bool ui_timeout_pending;

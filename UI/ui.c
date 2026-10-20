@@ -1,11 +1,9 @@
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../LCD/lcd.h"
 #include "../mcc_generated_files/tmr5.h"
 #include "ui.h"
-#include "../EEPROM/config_storage.h"
 
 #define UI_TIMER5_TICKS_PER_SECOND 31000u
 
@@ -201,17 +199,19 @@ static void ui_draw_temperature_records(const ui_display_data_t *data) {
     ui_write_line(0, "Max ");
     LCDpos(0, 4);
     ui_write_temperature(data->maximum_temperature.temperature);
-    sprintf(line, " %02u:%02u",
-            (unsigned int)data->maximum_temperature.timestamp.hour,
-            (unsigned int)data->maximum_temperature.timestamp.minute);
+    sprintf(line, " %02u:%02u:%02u",
+            data->maximum_temperature.timestamp.hour,
+            data->maximum_temperature.timestamp.minute,
+            data->maximum_temperature.timestamp.second);
     LCDstr(line);
 
     ui_write_line(1, "Min ");
     LCDpos(1, 4);
     ui_write_temperature(data->minimum_temperature.temperature);
-    sprintf(line, " %02u:%02u",
-            (unsigned int)data->minimum_temperature.timestamp.hour,
-            (unsigned int)data->minimum_temperature.timestamp.minute);
+    sprintf(line, " %02u:%02u:%02u",
+            data->minimum_temperature.timestamp.hour,
+            data->minimum_temperature.timestamp.minute,
+            data->minimum_temperature.timestamp.second);
     LCDstr(line);
     ui_hide_cursor();
 }
@@ -222,17 +222,19 @@ static void ui_draw_luminosity_records(const ui_display_data_t *data) {
     ui_write_line(0, "Max L");
     LCDpos(0, 5);
     ui_write_luminosity(data->maximum_luminosity.luminosity);
-    sprintf(line, " %02u:%02u",
-            (unsigned int)data->maximum_luminosity.timestamp.hour,
-            (unsigned int)data->maximum_luminosity.timestamp.minute);
+    sprintf(line, " %02u:%02u:%02u",
+            data->maximum_luminosity.timestamp.hour,
+            data->maximum_luminosity.timestamp.minute,
+            data->maximum_luminosity.timestamp.second);
     LCDstr(line);
 
     ui_write_line(1, "Min L");
     LCDpos(1, 5);
     ui_write_luminosity(data->minimum_luminosity.luminosity);
-    sprintf(line, " %02u:%02u",
-            (unsigned int)data->minimum_luminosity.timestamp.hour,
-            (unsigned int)data->minimum_luminosity.timestamp.minute);
+    sprintf(line, " %02u:%02u:%02u",
+            data->minimum_luminosity.timestamp.hour,
+            data->minimum_luminosity.timestamp.minute,
+            data->minimum_luminosity.timestamp.second);
     LCDstr(line);
     ui_hide_cursor();
 }
@@ -306,7 +308,7 @@ static void ui_update_threshold(uint8_t* threshold, uint8_t maximum,
  * 
  * @param record pointer to the record to reset.
  */
-static void clear_record(ui_record_t *record) {
+static void clear_record(record_t *record) {
     record->timestamp.hour = 12u;
     record->timestamp.minute = 0u;
     record->timestamp.second = 0u;
