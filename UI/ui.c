@@ -37,10 +37,10 @@ static void ui_write_line(uint8_t row, const char *text) {
     LCDstr(line);
 }
 
-static void ui_write_temperature(int8_t temperature) {
+static void ui_write_temperature(uint8_t temperature) {
     char text[6];
 
-    sprintf(text, "%dC", (int)temperature);
+    sprintf(text, "%dC", temperature);
     LCDstr(text);
 }
 
@@ -164,7 +164,7 @@ static void ui_draw_config(const ui_display_data_t *data) {
         ui_write_line(0, "Temperature");
         ui_write_line(1, "Threshold: ");
         LCDpos(1, 11);
-        ui_write_temperature((int8_t)data->temperature_threshold);
+        ui_write_temperature(data->temperature_threshold);
         row = 1u;
         column = 11u;
     } else if (state == UI_CONFIG_L || state == UI_CONFIG_L_ALAL) {
@@ -268,7 +268,7 @@ static void ui_update_timed_screen(UI_State next) {
     }
 }
 
-static void ui_update_threshold(uint8_t *threshold, uint8_t maximum,
+static void ui_update_threshold(uint8_t* threshold, uint8_t maximum,
                                 UI_State edit_state, UI_State next_state,
                                 uint8_t s1_pressed, uint8_t s2_pressed)
 {
@@ -289,7 +289,7 @@ static void clear_record(ui_record_t *record)
     record->timestamp.hour = 0u;
     record->timestamp.minute = 0u;
     record->timestamp.second = 0u;
-    record->temperature = 0;
+    record->temperature = 0u;
     record->luminosity = 0u;
 }
 
@@ -302,9 +302,7 @@ static void ui_reset_records(ui_display_data_t *data)
 }
 
 void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
-               uint8_t s2_pressed)
-{
-    uint8_t buffer;
+               uint8_t s2_pressed) {
     if (data == NULL)
         return;
 
@@ -365,16 +363,14 @@ void ui_update(ui_display_data_t *data, uint8_t s1_pressed,
 
         case UI_CONFIG_T:
         case UI_CONFIG_T_ALAT:
-            
-            ui_update_threshold(&buffer, 50u,
+            ui_update_threshold(&data->temperature_threshold, 50, 
                                 UI_CONFIG_T_ALAT, UI_CONFIG_L,
                                 s1_pressed, s2_pressed);
-            memcpy(&data->temperature_threshold, &buffer, sizeof(uint8_t));
             break;
 
         case UI_CONFIG_L:
         case UI_CONFIG_L_ALAL:
-            ui_update_threshold(&data->luminosity_threshold, 7u,
+            ui_update_threshold(&data->luminosity_threshold, 7,
                                 UI_CONFIG_L_ALAL, UI_CONFIG_A_ALAF,
                                 s1_pressed, s2_pressed);
             break;

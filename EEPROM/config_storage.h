@@ -30,7 +30,7 @@
 #define	CONFIG_STORAGE_H
 
 #include <xc.h>
-#include "..\mcc_generated_files/memory.h"
+#include "..\mcc_generated_files\memory.h"
 
 #define MW 0xA5
 

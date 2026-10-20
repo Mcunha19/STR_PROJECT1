@@ -33,16 +33,16 @@ extern UI_State state;
 
 typedef struct {
     time_t timestamp;
-    int8_t temperature;
+    uint8_t temperature;
     uint8_t luminosity;
 } ui_record_t;
 
 typedef struct {
     time_t current_time;
     time_t alarm_time;
-    int8_t temperature;
+    uint8_t temperature;
     uint8_t luminosity;
-    int8_t temperature_threshold;
+    uint8_t temperature_threshold;
     uint8_t luminosity_threshold;
     uint8_t alarms_enabled;
     uint8_t alarm_notifications;

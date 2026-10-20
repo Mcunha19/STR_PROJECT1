@@ -53,6 +53,8 @@
 #include "stdbool.h"
 #include <string.h>
 
+#define MAX_TEMPERATURE 50
+
 /**************** Global Variables ********************/
 time_t current_time;
 uint8_t temperature;
@@ -141,7 +143,7 @@ void buttonS2(void){
     __delay_ms(50);
     ////////////////
     
-    S2_pressed = true;
+    S2_pressed = true;  
     interrupt_occured = true;
     
     // clear interrupt flag
@@ -174,11 +176,12 @@ void timer_tick(void) {
     // Increment time variable
     Time_increment(&current_time);
     IO_RA7_D5_Toggle();
-    memory_flag_t flag;
-    flag = write_parameter(CLKH, current_time.hour);
-    flag = write_parameter(CLKM, current_time.minute);
-    if (flag == MEM_CORRUPTED) {
+    memory_flag_t m_flag = MEM_OK;
+    m_flag |= write_parameter(CLKH, current_time.hour);
+    m_flag |= write_parameter(CLKM, current_time.minute);
+    if (m_flag == MEM_CORRUPTED) {
         memory_reset();
+        m_flag = MEM_OK;
     }
     
     // Check thresholds
@@ -186,14 +189,15 @@ void timer_tick(void) {
             alarm_h,
             alarm_m,
             alarm_s,
-            alarm_l;
-    int8_t alarm_t;
-    flag = read_parameter(ALAF, &alarm_flag);
-    flag = read_parameter(ALAH, &alarm_h);
-    flag = read_parameter(ALAM, &alarm_m);
-    flag = read_parameter(ALAS, &alarm_s);
-    if (flag == MEM_CORRUPTED) {
+            alarm_l,
+            alarm_t;
+    m_flag |= read_parameter(ALAF, &alarm_flag);
+    m_flag |= read_parameter(ALAH, &alarm_h);
+    m_flag |= read_parameter(ALAM, &alarm_m);
+    m_flag |= read_parameter(ALAS, &alarm_s);
+    if (m_flag == MEM_CORRUPTED) {
         memory_reset();
+        m_flag = MEM_OK;
     } else if (alarm_flag) {
         if (alarm_h == current_time.hour &&
             alarm_m == current_time.minute &&
@@ -209,41 +213,40 @@ void timer_tick(void) {
     
     // Read sensors
     if (!(read_sensors++ % PMON_DEFAULT)) {
+        uint8_t aux = temperature;
         temperature = (uint8_t) readTC74();
-        int8_t temp_compare;
-        memcpy(&temp_compare, &temperature, sizeof(uint8_t));
+        temperature = (temperature > MAX_TEMPERATURE) ? aux : temperature;
         luminosity = getPOTvalue();
         
         // Update maximum and minimum values
-        if (temp_compare > maximum_temperature.temperature) {
-            maximum_temperature.temperature = temp_compare;
+        if (temperature > maximum_temperature.temperature) {
+            maximum_temperature.temperature = temperature;
             maximum_temperature.luminosity = luminosity;
             maximum_temperature.timestamp = current_time;
-        } else if (temp_compare < minimum_temperature.temperature) {
-            minimum_temperature.temperature = temp_compare;
+        } else if (temperature < minimum_temperature.temperature) {
+            minimum_temperature.temperature = temperature;
             minimum_temperature.luminosity = luminosity;
             minimum_temperature.timestamp = current_time;
         }
         
         if (luminosity > maximum_luminosity.luminosity) {
-            maximum_luminosity.temperature = temp_compare;
+            maximum_luminosity.temperature = temperature;
             maximum_luminosity.luminosity = luminosity;
             maximum_luminosity.timestamp = current_time;
         } else if (luminosity < minimum_luminosity.luminosity) {
-            minimum_luminosity.temperature = temp_compare;
+            minimum_luminosity.temperature = temperature;
             minimum_luminosity.luminosity = luminosity;
             minimum_luminosity.timestamp = current_time;
         }
         
         // Check thresholds
-        uint8_t buffer;
-        flag = read_parameter(ALAT, &buffer);
-        memcpy(&alarm_t, &buffer, sizeof(uint8_t));
-        flag = read_parameter(ALAL, &alarm_l);
-        if (flag == MEM_CORRUPTED) {
+        m_flag |= read_parameter(ALAT, &alarm_t);
+        m_flag |= read_parameter(ALAL, &alarm_l);
+        if (m_flag == MEM_CORRUPTED) {
             memory_reset();
+            m_flag = MEM_OK;
         } else if (alarm_flag) {
-            if (alarm_t <= temp_compare) {
+            if (alarm_t <= temperature) {
                 alarm_notification_mask |= UI_ALARM_TEMP;
 		
                 // Start buzzer
@@ -291,22 +294,20 @@ void timer_tick(void) {
 void getData(ui_display_data_t *data){
     
     // Fetch memory stored data
-    memory_flag_t flag;
+    memory_flag_t m_flag = MEM_OK;
     do {
-        flag = read_parameter(ALAH, &data->alarm_time.hour);
-        flag = read_parameter(ALAM, &data->alarm_time.minute);
-        flag = read_parameter(ALAS, &data->alarm_time.second);
-        uint8_t buffer;
-        flag = read_parameter(ALAT, &buffer);
-        memcpy(&data->temperature_threshold, &buffer, sizeof(uint8_t));
-        flag = read_parameter(ALAL, &data->luminosity_threshold);
-        flag = read_parameter(ALAF, &data->alarms_enabled);
-        if (flag == MEM_CORRUPTED) {
+        m_flag |= read_parameter(ALAH, &data->alarm_time.hour);
+        m_flag |= read_parameter(ALAM, &data->alarm_time.minute);
+        m_flag |= read_parameter(ALAS, &data->alarm_time.second);
+        m_flag |= read_parameter(ALAT, &data->temperature_threshold);
+        m_flag |= read_parameter(ALAL, &data->luminosity_threshold);
+        m_flag |= read_parameter(ALAF, &data->alarms_enabled);
+        if (m_flag == MEM_CORRUPTED) {
             memory_reset();
         }
-    } while (flag == MEM_CORRUPTED);
+    } while (m_flag == MEM_CORRUPTED);
     
-    memcpy(&data->temperature, &temperature, sizeof(uint8_t));
+    data->temperature = temperature;
     data->luminosity = luminosity;
     data->current_time = current_time;
     data->alarm_notifications = alarm_notification_mask;
@@ -323,20 +324,19 @@ void getData(ui_display_data_t *data){
  * @param data pointer to the data structure from which local data will be 
  * updated.
  */
-void write_parameters(ui_display_data_t* data){
-    memory_flag_t flag;
-    flag = write_parameter(ALAH, data->alarm_time.hour);
-    flag = write_parameter(ALAM, data->alarm_time.minute);
-    flag = write_parameter(ALAS, data->alarm_time.second);
-    uint8_t buffer;
-    memcpy(&buffer, &data->temperature_threshold, sizeof(uint8_t));
-    flag = write_parameter(ALAT, buffer);
-    flag = write_parameter(ALAL, data->luminosity_threshold);
-    flag = write_parameter(ALAF, data->alarms_enabled);
-    if (flag == MEM_CORRUPTED) {
+void writeData(ui_display_data_t* data){
+    memory_flag_t m_flag = MEM_OK;
+    m_flag |= write_parameter(ALAH, data->alarm_time.hour);
+    m_flag |= write_parameter(ALAM, data->alarm_time.minute);
+    m_flag |= write_parameter(ALAS, data->alarm_time.second);
+    m_flag |= write_parameter(ALAT, data->temperature_threshold);
+    m_flag |= write_parameter(ALAL, data->luminosity_threshold);
+    m_flag |= write_parameter(ALAF, data->alarms_enabled);
+    if (m_flag == MEM_CORRUPTED) {
         memory_reset();
     }
     current_time = data->current_time;
+    alarm_notification_mask = data->alarm_notifications;
 }
 
 
@@ -344,17 +344,27 @@ void write_parameters(ui_display_data_t* data){
  * Initializes Temperature and Luminosity records.
  */
 void first_reading(void){
-    maximum_temperature.temperature = ALAT_DEFAULT;
-    maximum_temperature.luminosity = ALAL_DEFAULT;
+    memory_flag_t m_flag = MEM_OK;
+    m_flag |= read_parameter(CLKH, &current_time.hour);
+    m_flag |= read_parameter(CLKM, &current_time.minute);
+    if (m_flag == MEM_CORRUPTED) {
+        memory_reset();
+    }
+    
+    temperature = (uint8_t) readTC74();
+    luminosity = getPOTvalue();
+    
+    maximum_temperature.temperature = temperature;
+    maximum_temperature.luminosity = luminosity;
     maximum_temperature.timestamp = current_time;
-    minimum_temperature.temperature = ALAT_DEFAULT;
-    minimum_temperature.luminosity = ALAL_DEFAULT;
+    minimum_temperature.temperature = temperature;
+    minimum_temperature.luminosity = luminosity;
     minimum_temperature.timestamp = current_time;
-    maximum_luminosity.temperature = ALAT_DEFAULT;
-    maximum_luminosity.luminosity = ALAL_DEFAULT;
+    maximum_luminosity.temperature = temperature;
+    maximum_luminosity.luminosity = luminosity;
     maximum_luminosity.timestamp = current_time;
-    minimum_luminosity.temperature = ALAT_DEFAULT;
-    minimum_luminosity.luminosity = ALAL_DEFAULT;
+    minimum_luminosity.temperature = temperature;
+    minimum_luminosity.luminosity = luminosity;
     minimum_luminosity.timestamp = current_time;
 }
 
@@ -408,6 +418,11 @@ void main(void) {
         SLEEP(); // wait for interrupt
         NOP(); // ensure instruction pre-fetched while sleeping is safe to execute on awakening
         
+        // REMOVE /////////////////////////////////
+        DATAEE_WriteByte(0xF020, 0x55);
+        volatile uint8_t value = DATAEE_ReadByte(0xF020);
+        ///////////////////////////////////////////
+        
         if (tick) {
             timer_tick();
             tick = false;
@@ -427,7 +442,7 @@ void main(void) {
             S2_pressed = false;
             
             // Update memory
-            write_parameters(&data);
+            writeData(&data);
 
         }
     }
