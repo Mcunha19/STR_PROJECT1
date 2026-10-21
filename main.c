@@ -117,20 +117,50 @@ unsigned char readTC74 (void) {
 }
 
 
+void Button_debounce(void) {
+    // Clear interrupt flag
+    PIR4bits.TMR3IF = 0;
+    
+    // Stop Timer 3
+    TMR3_StopTimer();
+
+    if (S1_press && !IO_RB4_S1_GetValue()) {
+        S1_pressed = true;
+    }
+    else if (S2_press && !IO_RC5_S2_GetValue()) {
+        S2_pressed = true;
+    }
+    
+    interrupt_occured = true;
+    
+    // Reset button press flags
+    S1_press = false;
+    S2_press = false;
+
+    // Enable button interrupts
+    PIE0bits.IOCIE = 1;
+}
+
+
 /**
  * Button S1 falling edge ISR.
  */
 void buttonS1(void){
     
-    // TEMPORARY////
-    __delay_ms(50);
-    ////////////////
-    
-    S1_pressed = true;
-    interrupt_occured = true;
+    S1_press = true;
+
+    // Stop Timer 3
+    TMR3_StopTimer();
+    // Reload Timer value
+    TMR3_Reload();
+    // Start Timer 3
+    TMR3_StartTimer();
     
     // clear interrupt flag
     PIR0bits.IOCIF = 0;
+
+    // Disable button interrupts
+    PIE0bits.IOCIE = 0;
 }
 
 
@@ -139,15 +169,20 @@ void buttonS1(void){
  */
 void buttonS2(void){
     
-    // TEMPORARY////
-    __delay_ms(50);
-    ////////////////
-    
-    S2_pressed = true;  
-    interrupt_occured = true;
+    S2_press = true;
+
+    // Stop Timer 3
+    TMR3_StopTimer();
+    // Reload Timer value
+    TMR3_Reload();
+    // Start Timer 3
+    TMR3_StartTimer();
     
     // clear interrupt flag
     PIR0bits.IOCIF = 0;
+
+    // Disable button interrupts
+    PIE0bits.IOCIE = 0;
 }
 
 
@@ -444,6 +479,11 @@ void main(void) {
     Time_reset(&current_time);
     // Start Timer 1
     TMR1_StartTimer();
+
+    // Setting Timer 3 interrupt handler
+    TMR3_SetInterruptHandler(Button_debounce);
+    // Stop Timer 3
+    TMR3_StopTimer();
     
     // Setting button press interrupt handler
     IOCBF4_SetInterruptHandler(buttonS1);
