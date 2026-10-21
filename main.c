@@ -126,12 +126,12 @@ void Button_debounce(void) {
 
     if (S1_press && !IO_RB4_S1_GetValue()) {
         S1_pressed = true;
+        interrupt_occured = true;
     }
     else if (S2_press && !IO_RC5_S2_GetValue()) {
         S2_pressed = true;
+        interrupt_occured = true;
     }
-    
-    interrupt_occured = true;
     
     // Reset button press flags
     S1_press = false;
