@@ -307,28 +307,28 @@ static void ui_update_threshold(uint8_t* threshold, uint8_t maximum,
  * Resets a record to the default values.
  * 
  * @param record pointer to the record to reset.
+ * @param data pointer to the ui data structure.
  */
-static void clear_record(record_t *record) {
-    record->timestamp.hour = 12u;
-    record->timestamp.minute = 0u;
-    record->timestamp.second = 0u;
-    record->temperature = ALAT_DEFAULT;
-    record->luminosity = ALAL_DEFAULT;
+static void clear_record(record_t *record, ui_display_data_t *data) {
+    record->timestamp.hour = data->current_time.hour;
+    record->timestamp.minute = data->current_time.minute;
+    record->timestamp.second = data->current_time.second;
+    record->temperature = data->temperature;
+    record->luminosity = data->luminosity;
 }
 
 
 /**
  * Resets maximum and minimum temperature and luminosity records. The 
- * temperature and luminosity values were chosen to be reset to the default
- * threshold values and the time is reset to 12h00m00s.
+ * temperature and luminosity values are reset to the current values.
  * 
  * @param data pointer to the ui data structure.
  */
 static void ui_reset_records(ui_display_data_t *data) {
-    clear_record(&data->maximum_temperature);
-    clear_record(&data->minimum_temperature);
-    clear_record(&data->maximum_luminosity);
-    clear_record(&data->minimum_luminosity);
+    clear_record(&data->maximum_temperature, data);
+    clear_record(&data->minimum_temperature, data);
+    clear_record(&data->maximum_luminosity, data);
+    clear_record(&data->minimum_luminosity, data);
 }
 
 void ui_update(ui_display_data_t *data, bool s1_pressed,

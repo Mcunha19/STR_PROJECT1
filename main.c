@@ -352,6 +352,15 @@ void writeData(ui_display_data_t* data){
     }
     current_time = data->current_time;
     alarm_notification_mask = data->alarm_notifications;
+    maximum_temperature = data->maximum_temperature;
+    minimum_temperature = data->minimum_temperature;
+    maximum_luminosity = data->maximum_luminosity;
+    minimum_luminosity = data->minimum_luminosity;
+    // Update memory
+    write_record(MAX_TEMP_REC, maximum_temperature);
+    write_record(MIN_TEMP_REC, minimum_temperature);
+    write_record(MAX_LUM_REC, maximum_luminosity);
+    write_record(MIN_LUM_REC, minimum_luminosity);
 }
 
 
